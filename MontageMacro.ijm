@@ -25,9 +25,11 @@ if (panels=="4")
 else 
 	Dialog.addChoice("Three Panels (two channels + merge):", threepanel);
 Dialog.addNumber("Grout size (pixels):", 8);
+Dialog.addNumber("d.p.i.", 300);
 Dialog.show();
 choice = Dialog.getChoice();
 grout = Dialog.getNumber();
+res = Dialog.getNumber();
 //
 dir1 = getDirectory("image");
 win = getTitle();
@@ -54,6 +56,8 @@ for (i=0; i<len; i++)   {
 	makeRectangle((w*i)+(grout*i), 0, w, h);
 	run("Paste");
 }
+//specify dpi default is 300 dpi
+run("Set Scale...", "distance=res known=1 unit=inch");
 //save montage
 saveAs("TIFF", dir1+newName);
 close();
