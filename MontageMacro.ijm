@@ -26,10 +26,16 @@ else
 	Dialog.addChoice("Three Panels (two channels + merge):", threepanel);
 Dialog.addNumber("Grout size (pixels):", 8);
 Dialog.addNumber("d.p.i.", 300);
+Dialog.addCheckbox("Scale bar?", false);
+Dialog.addNumber("Scale bar size (µm):", 10);
+Dialog.addNumber("1 px is how many µm?", 0.069);
 Dialog.show();
 choice = Dialog.getChoice();
 grout = Dialog.getNumber();
 res = Dialog.getNumber();
+sbchoice = Dialog.getCheckbox();
+sblen = Dialog.getNumber();
+mag = Dialog.getNumber();
 //
 dir1 = getDirectory("image");
 win = getTitle();
@@ -55,6 +61,12 @@ for (i=0; i<len; i++)   {
 	selectImage(newName);
 	makeRectangle((w*i)+(grout*i), 0, w, h);
 	run("Paste");
+}
+//add scale bar (height is same as grout)
+if (sbchoice==true)	{
+	getDimensions(w, h, c, nFrames, dummy);
+	setColor(255,255,255);
+	fillRect(w-(grout+(sblen/mag)), h-(2*grout), sblen/mag, grout);
 }
 //specify dpi default is 300 dpi
 run("Set Scale...", "distance=res known=1 unit=inch");
