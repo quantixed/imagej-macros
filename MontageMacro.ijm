@@ -51,7 +51,7 @@ for (i=0; i<len; i++)   {
 	setSlice(ch);
 	run("Copy");
 	selectImage(newName);
-	makeRectangle((w*i)+((grout*i)-grout), 0, w, h);
+	makeRectangle((w*i)+(grout*i), 0, w, h);
 	run("Paste");
 }
 //save montage
@@ -60,10 +60,3 @@ close();
 //close tempstack "stk"
 selectWindow("stk");
 close();
-
-
-
-
-
-
- 
