@@ -37,6 +37,8 @@ sbchoice = Dialog.getCheckbox();
 sblen = Dialog.getNumber();
 mag = Dialog.getNumber();
 //
+setBatchMode(true);
+//
 dir1 = getDirectory("image");
 win = getTitle();
 merge = dir1+win;
@@ -72,7 +74,10 @@ if (sbchoice==true)	{
 run("Set Scale...", "distance=res known=1 unit=inch");
 //save montage
 saveAs("TIFF", dir1+newName);
+setBatchMode(false);
+/*
 close();
 //close tempstack "stk"
 selectWindow("stk");
 close();
+*/
