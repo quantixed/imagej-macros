@@ -1,7 +1,7 @@
 /*
  This macro will take a 3 channel RGB TIFF (1 slice) and make a 3 or 4 panel
  montage. Specify order of grayscale channels, merge is on right.
- Also specify grouting for the montage. There's no outside border or scale bar.
+ Also specify grouting for the montage. There's no outside border, but there is an option to add a scale bar
 */
 filepath=File.openDialog("Select a File"); 
 open(filepath);
