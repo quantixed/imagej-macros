@@ -48,8 +48,10 @@ sbchoice = Dialog.getCheckbox();
 sblen = Dialog.getNumber();
 mag = Dialog.getNumber();
 //
-
+setBatchMode(true);
+//
 win = getTitle();
+dir1 = getDirectory("image");
 newName = "cmp" + choice + win;
 run("Images to Stack", "name=stk title=[] use");
 getDimensions(w, h, c, nFrames, dummy);
@@ -73,7 +75,11 @@ if (sbchoice==true)	{
 }
 //specify dpi default is 300 dpi
 run("Set Scale...", "distance=res known=1 unit=inch");
-
+//save montage
+saveAs("TIFF", dir1+newName);
+setBatchMode(false);
+/*
 //close tempstack "stk"
 selectWindow("stk");
 close();
+*/
