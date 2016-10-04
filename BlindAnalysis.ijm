@@ -5,8 +5,7 @@
  *  	save each with a randomised filename
  *  	log the association between original file and blind analysis file
  *  Adapted from:
- *  Shuffler macro by Christophe Leterrier
- *  v1.0 26/06/08
+ *  Shuffler macro by Christophe Leterrier v1.0 26/06/08
 */
 
 macro "Blind Analysis" {
@@ -64,22 +63,25 @@ print("DIR_PATH :"+DIR_PATH);
 	if (SAVE_TYPE=="In a custom folder") {
 		OUTPUT_DIR=getDirectory("Choose the save folder");
 	}
-	
-	// Got rid of part that defines IM_NUMBER... try to delete
-	IM_NUMBER=ALL_EXT.length;
-	// Define an array for storing .tif names, extensions (useful if extended to more than .tif), channels and shortname (name without channel info)
+
+	// How many TIFFs do we have? Directory could contain other directories.
+	for (i=0; i<ALL_EXT.length; i++) {		
+ 		if (ALL_EXT[i]==".tif") {	
+ 			IM_NUMBER=IM_NUMBER+1;		
+ 		}
+ 	}
+	//IM_NUMBER=ALL_EXT.length;
 	IM_NAMES=newArray(IM_NUMBER);
 	IM_EXT=newArray(IM_NUMBER);
 	
-	// Test all files for extension and channel
-	// store their names, extension and channel in the reference arrays:
-	// NAMES, EXT for extensions, SHORT for short name
+	// Test all files for extension
 	j=0;
 	for (i=0; i<ALL_EXT.length; i++) {
-		//if (ALL_EXT[i]==".tif") {	
-		IM_NAMES[j]=ALL_NAMES[i];
-		IM_EXT[j]=ALL_EXT[i];
-		j=j+1;
+		if (ALL_EXT[i]==".tif") {	
+			IM_NAMES[j]=ALL_NAMES[i];
+			IM_EXT[j]=ALL_EXT[i];
+			j=j+1;
+		}
 	}
 	
 	// Print arrays for verification
@@ -111,16 +113,7 @@ print("DIR_PATH :"+DIR_PATH);
 	// Associate sequentially permuted positions to image names
 	IM_PERM_NAMES=newArray(IM_NUMBER);
 	for(j=0; j<IM_NUMBER; j++){
-		IM_PERM_NAMES[j]="blind_"+IM_PERM[j];
-		// this additional loop propagates the permuted position to all images that are
-		// a different channel of the same acquisition: as a consequence,
-		// all permuted positions will not be present in the blinded image names
-		/*for (j2=0; j2<IM_NUMBER; j2++) {
-			if (IM_SHORT[j2]==IM_SHORT[j]) {
-				// Generate the blinded image name, using the pad() function
-				IM_PERM_NAMES[j2]="blind_"+pad(IM_PERM[j],3,0);
-			}
-		}*/
+		IM_PERM_NAMES[j]="blind_"+pad(IM_PERM[j],4,0); // for more than 9999 images change width
 	}
 	
 	// Print arrays for verification
@@ -136,18 +129,17 @@ print("DIR_PATH :"+DIR_PATH);
 	print("IM_PERM_NAMES="+IM_PERM_NAMES_STRING);
 	
 	// Open each image (loop on IM_NAMES) and save them in the destination folder
-	// as the original file (IM_NAME) and as the blinded file (IM_PERM_NAME).
+	// as the blinded file (IM_PERM_NAME).
 	// Additionally logs both names in the log.txt file created in the destination folder
 	setBatchMode(true);
 	f=File.open(OUTPUT_DIR+"log.txt");
-	print(f, "Blind Analysis log");
+	print(f, "Original_Name\tBlinded_Name");
 	for(j=0; j<IM_NUMBER; j++){
 		INPUT_PATH=DIR_PATH+IM_NAMES[j];
 		OUTPUT_PATH=OUTPUT_DIR+IM_NAMES[j];
 		OUTPUT_PATH_PERM=OUTPUT_DIR+IM_PERM_NAMES[j];
 		open(INPUT_PATH);
 		setMetadata("Label", "");
-		save(OUTPUT_PATH);
 		save(OUTPUT_PATH_PERM);
 		print(f,IM_NAMES[j]+"\t"+IM_PERM_NAMES[j]);
 		close();
