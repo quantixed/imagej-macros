@@ -26,43 +26,9 @@ print("DIR_PATH :"+DIR_PATH);
 		else ALL_EXT[i]="folder";
 	}
 	
-	// Print arrays for verification
-	ALL_NAMES_STRING="[";
-	ALL_EXT_STRING="[";
-	for (i=0; i<ALL_NAMES.length; i++) {	
-		ALL_NAMES_STRING=ALL_NAMES_STRING+"  "+ALL_NAMES[i];
-		ALL_EXT_STRING=ALL_EXT_STRING+"  "+ALL_EXT[i];
-	}
-	ALL_NAMES_STRING=ALL_NAMES_STRING+" ]";
-	ALL_EXT_STRING=ALL_EXT_STRING+" ]";
-	print("ALL_NAMES="+ALL_NAMES_STRING);
-	print("ALL_EXT="+ALL_EXT_STRING);
-	
-	SAVE_ARRAY = newArray("In the source folder", "In a subfolder of the source folder", "In a folder next to the source folder", "In a custom folder");
-	
-	// Creation of the dialog box
-	Dialog.create("blind analysis");
-	Dialog.addChoice("Save blind analysis images :", SAVE_ARRAY, "In a subfolder of the source folder");
-	Dialog.show();
-	SAVE_TYPE=Dialog.getChoice();
-	
-	// Localize or create the output folder
-	OUTPUT_DIR="Void";
-	if (SAVE_TYPE=="In the source folder") {
-		OUTPUT_DIR=DIR_PATH;
-	}
-	if (SAVE_TYPE=="In a subfolder of the source folder") {
-		OUTPUT_DIR=DIR_PATH+"BLIND"+File.separator;
-		File.makeDirectory(OUTPUT_DIR);
-	}
-	if (SAVE_TYPE=="In a folder next to the source folder") {
-		OUTPUT_DIR=File.getParent(DIR_PATH);
-		OUTPUT_DIR=OUTPUT_DIR+"BLIND"+File.separator;
-		File.makeDirectory(OUTPUT_DIR);
-	}
-	if (SAVE_TYPE=="In a custom folder") {
-		OUTPUT_DIR=getDirectory("Choose the save folder");
-	}
+	// Create the output folder
+	OUTPUT_DIR=DIR_PATH+"BLIND"+File.separator;
+	File.makeDirectory(OUTPUT_DIR);
 
 	// How many TIFFs do we have? Directory could contain other directories.
 	for (i=0; i<ALL_EXT.length; i++) {		
@@ -70,7 +36,6 @@ print("DIR_PATH :"+DIR_PATH);
  			IM_NUMBER=IM_NUMBER+1;		
  		}
  	}
-	//IM_NUMBER=ALL_EXT.length;
 	IM_NAMES=newArray(IM_NUMBER);
 	IM_EXT=newArray(IM_NUMBER);
 	
@@ -83,21 +48,7 @@ print("DIR_PATH :"+DIR_PATH);
 			j=j+1;
 		}
 	}
-	
-	// Print arrays for verification
-	IM_NAMES_STRING="[";
-	IM_EXT_STRING="[";
-	IM_CH_STRING="[";
-	IM_SHORT_STRING="[";
-	for (j=0; j<IM_NUMBER; j++) {	
-		IM_NAMES_STRING=IM_NAMES_STRING+"  "+IM_NAMES[j];
-		IM_EXT_STRING=IM_EXT_STRING+"  "+IM_EXT[j];
-	}
-	IM_NAMES_STRING=IM_NAMES_STRING+" ]";
-	IM_EXT_STRING=IM_EXT_STRING+" ]";
-	print("IM_NAMES="+IM_NAMES_STRING);
-	print("IM_EXT="+IM_EXT_STRING);
-	
+
 	// Generate a permutation array of length IM_NUMBER	
 	IM_PERM=newArray(IM_NUMBER);
 	for(j=0; j<IM_NUMBER; j++) {
@@ -115,19 +66,7 @@ print("DIR_PATH :"+DIR_PATH);
 	for(j=0; j<IM_NUMBER; j++){
 		IM_PERM_NAMES[j]="blind_"+pad(IM_PERM[j],4,0); // for more than 9999 images change width
 	}
-	
-	// Print arrays for verification
-	IM_PERM_STRING="[";
-	IM_PERM_NAMES_STRING="[";
-	for (j=0; j<IM_NUMBER; j++) {	
-		IM_PERM_STRING=IM_PERM_STRING+"  "+IM_PERM[j];
-		IM_PERM_NAMES_STRING=IM_PERM_NAMES_STRING+"  "+IM_PERM_NAMES[j];
-	}
-	IM_PERM_STRING=IM_PERM_STRING+" ]";
-	IM_PERM_NAMES_STRING=IM_PERM_NAMES_STRING+" ]";
-	print("IM_PERM="+IM_PERM_STRING);
-	print("IM_PERM_NAMES="+IM_PERM_NAMES_STRING);
-	
+
 	// Open each image (loop on IM_NAMES) and save them in the destination folder
 	// as the blinded file (IM_PERM_NAME).
 	// Additionally logs both names in the log.txt file created in the destination folder
@@ -139,7 +78,7 @@ print("DIR_PATH :"+DIR_PATH);
 		OUTPUT_PATH=OUTPUT_DIR+IM_NAMES[j];
 		OUTPUT_PATH_PERM=OUTPUT_DIR+IM_PERM_NAMES[j];
 		open(INPUT_PATH);
-		setMetadata("Label", "");
+		setMetadata("Label", ""); // strips the label data from the image for blinding purposes
 		save(OUTPUT_PATH_PERM);
 		print(f,IM_NAMES[j]+"\t"+IM_PERM_NAMES[j]);
 		close();
