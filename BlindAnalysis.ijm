@@ -22,6 +22,7 @@ print("DIR_PATH :"+DIR_PATH);
 		if (File.isDirectory(DIR_PATH+ALL_NAMES[i])!=1){
 			LENGTH=lengthOf(ALL_NAMES[i]);
 			ALL_EXT[i]=substring(ALL_NAMES[i],LENGTH-4,LENGTH);
+			//indexOf(toLowerCase(Name), ".tif")>0;
 		}
 		else ALL_EXT[i]="folder";
 	}
@@ -64,7 +65,7 @@ print("DIR_PATH :"+DIR_PATH);
 	// Associate sequentially permuted positions to image names
 	IM_PERM_NAMES=newArray(IM_NUMBER);
 	for(j=0; j<IM_NUMBER; j++){
-		IM_PERM_NAMES[j]="blind_"+pad(IM_PERM[j],4,0); // for more than 9999 images change width
+		IM_PERM_NAMES[j]="blind_"+IJ.pad(IM_PERM[j],4); // for more than 9999 images change width
 	}
 
 	// Open each image (loop on IM_NAMES) and save them in the destination folder
@@ -86,16 +87,4 @@ print("DIR_PATH :"+DIR_PATH);
 	setBatchMode("exit and display");
 	showStatus("finished");
 	
-}
-
-// This function generates a padded number, i.e. 34 becomes 00034 by pad(34,5,0)
-// number is the number to pad (here 34)
-// width is the final length of the padded number (here 5)
-// character is the character added to the left (here 0)
-function pad(number, width, character) {
-       number = toString(number); // force string
-       character = toString(character);
-       for (len = lengthOf(number); len < width; len++)
-               number = character + number;
-       return number;
 }
