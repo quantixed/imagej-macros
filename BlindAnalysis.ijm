@@ -16,24 +16,14 @@ print("DIR_PATH :"+DIR_PATH);
 	
 	// Get all file names
 	ALL_NAMES=getFileList(DIR_PATH);
-	ALL_EXT=newArray(ALL_NAMES.length);
-	// Create extensions array
-	for (i=0; i<ALL_NAMES.length; i++) {
-		if (File.isDirectory(DIR_PATH+ALL_NAMES[i])!=1){
-			LENGTH=lengthOf(ALL_NAMES[i]);
-			ALL_EXT[i]=substring(ALL_NAMES[i],LENGTH-4,LENGTH);
-			//indexOf(toLowerCase(Name), ".tif")>0;
-		}
-		else ALL_EXT[i]="folder";
-	}
-	
+
 	// Create the output folder
 	OUTPUT_DIR=DIR_PATH+"BLIND"+File.separator;
 	File.makeDirectory(OUTPUT_DIR);
 
 	// How many TIFFs do we have? Directory could contain other directories.
-	for (i=0; i<ALL_EXT.length; i++) {		
- 		if (ALL_EXT[i]==".tif") {	
+	for (i=0; i<ALL_NAMES.length; i++) {		
+ 		if (indexOf(toLowerCase(ALL_NAMES[i]), ".tif")>0) {	
  			IM_NUMBER=IM_NUMBER+1;		
  		}
  	}
@@ -42,10 +32,9 @@ print("DIR_PATH :"+DIR_PATH);
 	
 	// Test all files for extension
 	j=0;
-	for (i=0; i<ALL_EXT.length; i++) {
-		if (ALL_EXT[i]==".tif") {	
+	for (i=0; i<ALL_NAMES.length; i++) {
+		if (indexOf(toLowerCase(ALL_NAMES[i]), ".tif")>0) {	
 			IM_NAMES[j]=ALL_NAMES[i];
-			IM_EXT[j]=ALL_EXT[i];
 			j=j+1;
 		}
 	}
