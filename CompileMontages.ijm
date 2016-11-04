@@ -17,6 +17,11 @@ for (i=0; i<nImages; i++)	{
     print((i+1) + " : " + title);
 }
 
+if (isOpen("Log")) { 
+    selectWindow("Log"); 
+    setLocation(10, 50); 
+} 
+
 tworow = newArray("12","21");
 threerow = newArray("123","132","213","231","312","321");
 fourrow = newArray("1234","1243","1324","1342","1423","1432","2143","2134","2341","2314","2431","2413","3124","3142","3214","3241","3412","3421","4132","4123","4231","4213","4321","4312");
@@ -79,7 +84,7 @@ run("Set Scale...", "distance=res known=1 unit=inch");
 saveAs("TIFF", dir1+newName);
 setBatchMode(false);
 /*
-//close tempstack "stk"
+// close tempstack "stk"
 selectWindow("stk");
 close();
 */
