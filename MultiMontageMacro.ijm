@@ -4,6 +4,7 @@
  Also specify grouting for the montage. There's no outside border, but there is an option to add a scale bar
 */
 macro "Multi-purpose Montage Maker"	{
+	if (nImages > 0) exit ("Please close all open images");
 	filepath=File.openDialog("Select a File"); 
 	open(filepath);
 	if (bitDepth() == 24)
@@ -13,6 +14,7 @@ macro "Multi-purpose Montage Maker"	{
 }
 
 macro "Montage from RGB" {
+	if (nImages > 0) exit ("Please close all open images");
 	filepath=File.openDialog("Select a File"); 
 	open(filepath);
 	if (bitDepth() != 24) exit ("RGB image required.");
@@ -20,7 +22,7 @@ macro "Montage from RGB" {
 }
 
 macro "Montage from >4Ch" {
-	// check for open files
+	if (nImages > 0) exit ("Please close all open images");
 	filepath=File.openDialog("Select a File"); 
 	open(filepath);
 	if (bitDepth() == 8 || bitDepth() == 16)
@@ -104,53 +106,135 @@ function montageFrom16Bit()	{
 	
 	// check how many slices/channels
 	Stack.getDimensions(width, height, channels, slices, frames);
-	if (channels == 1) exit ("Need more than one channel.");
-	// perform more checks here
-
-	
+	if (channels * slices * frames == 1) exit ("Need more than one channel or slice or frame.");
+	// going to split channels - this is likely point of failure for troubleshooting this code
+	run("Split Channels");
 	imgArray = newArray(nImages);
-	rowArray = newArray(nImages);
+	colArray = newArray(nImages);
+	mArray = newArray(nImages + 1);
+	mArray[0] = "*None*";
 	for (i=0; i<nImages; i++)	{
 		selectImage(i+1);
 		imgArray[i] = getImageID();
 		title = getTitle();
-		rowArray[i] = title;
+		colArray[i] = title;
+		mArray[i+1] = title;
 	}
 	// give the option of making up to 2 merges
 	Dialog.create("Montage Choice"); 
 	Dialog.addMessage("How many grayscale panels?");
 	Dialog.addChoice("I'd like...", newArray("1","2","3","4"));
 	Dialog.addMessage("How many merge panels?");
-	Dialog.addChoice("I'd like...", newArray("1","2"));
+	Dialog.addChoice("I'd like...", newArray("0","1","2"));
 	Dialog.show();
 	gPanels = Dialog.getChoice();
 	mPanels = Dialog.getChoice();
+	gVar = parseInt(gPanels);
+	mVar = parseInt(mPanels);
+	// Make arrays to hold image choices
+	gNameArray = newArray(gVar);
+	if (mVar == 1) {
+		m1NameArray = newArray(3);
+	}
+	else if (mVar == 2) {
+		m1NameArray = newArray(3);
+		m2NameArray = newArray(3);
+	}
 	
-	//Next dialog
-	fourpanel = newArray("RGBM", "RBGM", "GRBM", "GBRM", "BGRM", "BRGM");
-	threepanel = newArray("RGM", "RBM", "GRM", "GBM", "BRM", "BGM");
+	// Next dialog
 	grout=8;
-	Dialog.create("Panel Details");
-	Dialog.addMessage("What layout would you like?");
-	if (panels=="4")
-		Dialog.addChoice("Four Panels (three channels + merge):", fourpanel);
-	else 
-		Dialog.addChoice("Three Panels (two channels + merge):", threepanel);
+	Dialog.create("Pick your panels"); 
+	Dialog.addMessage("Select order for grayscale");
+	// variations based on number of files
+	if (gVar==1)	{
+		Dialog.addChoice("Left", colArray);
+	}
+	else if (gVar==2)	{
+		Dialog.addChoice("Left", colArray);
+		Dialog.addChoice("Right", colArray);
+	}
+	else if (gVar==3)	{
+		Dialog.addChoice("Left", colArray);
+		Dialog.addChoice("Middle", colArray);
+		Dialog.addChoice("Right", colArray);
+	}
+	else if (gVar==4)	{
+		Dialog.addChoice("Left", colArray);
+		Dialog.addChoice("Left Mid", colArray);
+		Dialog.addChoice("Right Mid", colArray);
+		Dialog.addChoice("Right", colArray);
+	}
+	// variations based on merges
+	if (mVar==0)	{
+	}
+	else if (mVar==1)	{
+		Dialog.addMessage("Select channels for merge");
+		Dialog.addChoice("Red", mArray);
+		Dialog.addChoice("Green", mArray);
+		Dialog.addChoice("Blue", mArray);
+	}
+	else if (mVar==2)	{
+		Dialog.addMessage("Select channels for 1st merge");
+		Dialog.addChoice("Red", mArray);
+		Dialog.addChoice("Green", mArray);
+		Dialog.addChoice("Blue", mArray);
+		Dialog.addMessage("Select channels for 2nd merge");
+		Dialog.addChoice("Red", mArray);
+		Dialog.addChoice("Green", mArray);
+		Dialog.addChoice("Blue", mArray);
+	}
 	Dialog.addNumber("Grout size (pixels):", 8);
 	Dialog.addNumber("d.p.i.", 300);
 	Dialog.addCheckbox("Scale bar?", false);
 	Dialog.addNumber("Scale bar size (µm):", 10);
 	Dialog.addNumber("1 px is how many µm?", 0.069);
 	Dialog.show();
-	choice = Dialog.getChoice();
+	// variations based on channels
+	if (gVar==1)	{
+		gNameArray[0] = Dialog.getChoice();
+	}
+	else if (gVar==2)	{
+		gNameArray[0] = Dialog.getChoice();
+		gNameArray[1] = Dialog.getChoice();
+	}
+	else if (gVar==3)	{
+		gNameArray[0] = Dialog.getChoice();
+		gNameArray[1] = Dialog.getChoice();
+		gNameArray[2] = Dialog.getChoice();
+	}
+	else if (gVar==4)	{
+		gNameArray[0] = Dialog.getChoice();
+		gNameArray[1] = Dialog.getChoice();
+		gNameArray[2] = Dialog.getChoice();
+		gNameArray[3] = Dialog.getChoice();
+	}
+	// variations based on merges
+	if (mVar==0)	{
+	}
+	else if (mVar==1)	{
+		m1NameArray[0] = Dialog.getChoice();
+		m1NameArray[1] = Dialog.getChoice();
+		m1NameArray[2] = Dialog.getChoice();
+	}
+	else if (mVar==2)	{
+		m1NameArray[0] = Dialog.getChoice();
+		m1NameArray[1] = Dialog.getChoice();
+		m1NameArray[2] = Dialog.getChoice();
+		m2NameArray[0] = Dialog.getChoice();
+		m2NameArray[1] = Dialog.getChoice();
+		m2NameArray[2] = Dialog.getChoice();
+	}
 	grout = Dialog.getNumber();
 	res = Dialog.getNumber();
 	sbchoice = Dialog.getCheckbox();
 	sblen = Dialog.getNumber();
 	mag = Dialog.getNumber();
-	//
+	// decisions collected
 	setBatchMode(true);
-	//
+
+	// need to make a frame for *None*
+
+	// The part below needs to be re-written
 	dir1 = getDirectory("image");
 	win = getTitle();
 	merge = dir1+win;
