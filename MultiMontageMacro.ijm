@@ -231,35 +231,45 @@ function montageFrom16Bit()	{
 	mag = Dialog.getNumber();
 	// decisions collected
 	setBatchMode(true);
-
-	// need to make a frame for *None*
-
+	
 	// The part below needs to be re-written
 	dir1 = getDirectory("image");
 	win = getTitle();
 	merge = dir1+win;
-	newName = "mtg" + choice + win;
-	getDimensions(w, h, c, nFrames, dummy);
-	run("Split Channels");
-	open(merge);
-	run("Images to Stack", "name=stk title=[] use");
-	len=lengthOf(choice);
-	newImage(newName, "RGB", ((w*len)+(grout*(len-1))), h, 1);
-	//convert choice to numeric (frame number)
-	str1=replace(choice,"R","1");
-	str2=replace(str1,"G","2");
-	str3=replace(str2,"B","3");
-	str4=replace(str3,"M","4");
-	//
-	for (i=0; i<len; i++)   {
-		ch=substring(str4, i, i+1);
-		selectImage("stk");
-		setSlice(ch);
+	newName = "mtg" + win;
+	len = gVar + mVar;
+	newImage(newName, "RGB", ((width*len)+(grout*(len-1))), height, 1);
+
+	// paste in grayscales
+	for (i = 0; i < gVar; i++)   {
+		wName = gNameArray[i];
+		selectImage(wName);
 		run("Copy");
 		selectImage(newName);
-		makeRectangle((w*i)+(grout*i), 0, w, h);
+		makeRectangle((width*i)+(grout*i), 0, width, height);
 		run("Paste");
 	}
+
+	// make array to hold merge names
+	mImgArray = newArray("merge1","merge2");
+	
+	// paste in merges
+	for (i = 0; i < mVar; i++)   {
+		if (i == 0) {
+			run("Merge Channels...", "red=m1NameArray[0] green=m1NameArray[0] blue=m1NameArray[0] keep ignore"); 
+			rename(merge1);
+		}
+		else {
+			run("Merge Channels...", "red=m2NameArray[0] green=m2NameArray[0] blue=m2NameArray[0] keep ignore"); 
+			rename(merge2);
+		}
+		selectImage(mImgArray[i]);
+		run("Copy");
+		selectImage(newName);
+		makeRectangle(((width*gVar)+(grout*gVar-1))+((width*i)+(grout*i)), 0, width, height);
+		run("Paste");
+	}
+	
 	//add scale bar (height is same as grout)
 	if (sbchoice==true)	{
 		getDimensions(w, h, c, nFrames, dummy);
