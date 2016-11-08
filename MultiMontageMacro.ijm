@@ -252,16 +252,19 @@ function montageFrom16Bit()	{
 
 	// make array to hold merge names
 	mImgArray = newArray("merge1","merge2");
-	
+
 	// paste in merges
 	for (i = 0; i < mVar; i++)   {
 		if (i == 0) {
-			run("Merge Channels...", "red=m1NameArray[0] green=m1NameArray[0] blue=m1NameArray[0] keep ignore"); 
-			rename(merge1);
+			mergeString = "c1=[" + m1NameArray[0] + "] c2=[" + m1NameArray[1] + "] c3=[" + m1NameArray[2] + "] keep";
+			// print(mergestring);
+			run("Merge Channels...", mergeString);
+			rename("merge1");
 		}
 		else {
-			run("Merge Channels...", "red=m2NameArray[0] green=m2NameArray[0] blue=m2NameArray[0] keep ignore"); 
-			rename(merge2);
+			mergeString = "c1=[" + m2NameArray[0] + "] c2=[" + m2NameArray[1] + "] c3=[" + m2NameArray[2] + "] keep";
+			run("Merge Channels...", mergeString);  
+			rename("merge2");
 		}
 		selectImage(mImgArray[i]);
 		run("Copy");
