@@ -281,7 +281,13 @@ function montageFrom16Bit()	{
 	}
 	//specify dpi default is 300 dpi
 	run("Set Scale...", "distance=res known=1 unit=inch");
+	run("Select None");
 	//save montage
 	saveAs("TIFF", dir1+newName);
 	setBatchMode(false);
+	// close originals
+	for (i=0; i<imgArray.length; i++)	{
+		selectImage(imgArray[i]);
+		close();
+	}
 }
