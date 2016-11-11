@@ -103,7 +103,7 @@ function rgb2Montage()	{
 }
 
 function montageFrom16Bit()	{
-	
+	dir1 = getDirectory("image");
 	// check how many slices/channels
 	Stack.getDimensions(width, height, channels, slices, frames);
 	if (channels * slices * frames == 1) exit ("Need more than one channel or slice or frame.");
@@ -232,10 +232,8 @@ function montageFrom16Bit()	{
 	// decisions collected
 	setBatchMode(true);
 	
-	// The part below needs to be re-written
-	dir1 = getDirectory("image");
-	win = getTitle();
-	merge = dir1+win;
+	// collect details from images
+	win = getTitle(); // could change this so that name is something more logical
 	newName = "mtg" + win;
 	len = gVar + mVar;
 	newImage(newName, "RGB", ((width*len)+(grout*(len-1))), height, 1);
@@ -273,6 +271,7 @@ function montageFrom16Bit()	{
 		run("Paste");
 	}
 	
+	selectImage(newName);
 	//add scale bar (height is same as grout)
 	if (sbchoice==true)	{
 		getDimensions(w, h, c, nFrames, dummy);
@@ -284,7 +283,7 @@ function montageFrom16Bit()	{
 	run("Select None");
 	//save montage
 	saveAs("TIFF", dir1+newName);
-	setBatchMode(false);
+	//setBatchMode(false);
 	// close originals
 	for (i=0; i<imgArray.length; i++)	{
 		selectImage(imgArray[i]);
