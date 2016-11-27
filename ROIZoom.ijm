@@ -6,6 +6,7 @@
  * but will work on single square images.
  * Open 1 image. Run Macro. Pick settings.
  * Click in the centre of where you want your ROI to be (any panel will work).
+ * http://github.com/quantixed/imagej-macros/
  */
 
 macro "Add ROI Zoom"	{
@@ -37,6 +38,13 @@ macro "Add ROI Zoom"	{
 
 	// ask what size ROI and expansion and corner
 	cornerArray = newArray("LT", "RT", "LB", "RB");
+	labels = newArray(nCol);
+  	defaults = newArray(nCol);
+  	panelDecisions = newArray(nCol);
+  	for (i=0; i<nCol; i++)	{
+  		labels[i] = "Panel "+i+1;
+  		defaults[i] = true;
+  	}
 	// Make dialog box
 	Dialog.create("Specify ROI Zoom"); 
 	Dialog.addMessage("Select corner for zoom");
@@ -45,6 +53,8 @@ macro "Add ROI Zoom"	{
 	Dialog.addNumber("Box size (px)", 50);
 	Dialog.addNumber("Expansion e.g. 2X", 2);
 	Dialog.addNumber("Border for boxes (px)", 2);
+	Dialog.addMessage("Make boxes and zooms in panels...");
+	Dialog.addCheckboxGroup(1,nCol,labels,defaults);
 	// need to add something here so that the user can define where boxes go
 	Dialog.show();
 	
@@ -52,6 +62,9 @@ macro "Add ROI Zoom"	{
 	bSize = Dialog.getNumber();
 	expand = Dialog.getNumber();
 	bStroke = Dialog.getNumber();
+	for (i=0; i<nCol; i++)	{
+		panelDecisions[i] = Dialog.getCheckbox();
+	}
 	// decisions collected
 
 	// sanity check
@@ -77,7 +90,7 @@ macro "Add ROI Zoom"	{
 	// figure out which column the selction is in
 	// each panel is h x h pixels separated by grout
 	sp = floor(xp / h);	// sp is the panel where selection is 0-based
-	// this is risky but box should not be less than grout away from panel edge
+	// --this is risky but box should not be less than grout away from panel edge
 	
 	// x and y coords relative to the panel
 	xp1 = xp - (sp * (h + grout));
@@ -96,50 +109,52 @@ macro "Add ROI Zoom"	{
 	}
 	// do the copy/pasting
 	for (i=0; i<nCol; i++)	{
-		run("Select None");
-		xq = xp1 + (i * (h + grout));
-		yq = yp1 + 0; // --for future dev
-		makeRectangle(xq-(bSize/2),yq-(bSize/2),bSize,bSize);
-		run("Copy");
-		// make border
-		makeRectangle(xq-((bSize + bStroke)/2),yq-((bSize + bStroke)/2),bSize+bStroke,bSize+bStroke);
-		run("Fill");
-		makeRectangle(xq-(bSize/2),yq-(bSize/2),bSize,bSize);
-		run("Paste");
-		run("Internal Clipboard");
-		selectWindow("Clipboard");
-		cmd = "width="+dSize+" height="+dSize+" constrain average interpolation=Bilinear";
-		run("Size...", cmd);
-		run("Select All");
-		run("Copy");
-		close("Clipboard");
-		selectWindow(title);
-		// L dStartx is left side of panel; R dStartX is right side of panel - dSize
-		if (corner == "LB" || corner == "LT")	{
-			dStartx = (i * (h + grout)); // L	
-		}
-		else if (corner == "RB" || corner == "RT")	{
-			dStartx = h + (i * (h + grout)) - dSize; // R
-		}
-		// dStarty calculated outside the loop
-
-		// make border for zoom
-		if (corner == "LB")	{
-			makeRectangle(dStartx,dStarty-bStroke,dSize+bStroke,dSize+bStroke);
-		}
-		else if (corner == "LT")	{
-			makeRectangle(dStartx,dStarty,dSize+bStroke,dSize+bStroke);
-		}
-		else if (corner == "RB")	{
-			makeRectangle(dStartx-bStroke,dStarty-bStroke,dSize+bStroke,dSize+bStroke);
-		}
-		else if (corner == "RT")	{
-			makeRectangle(dStartx-bStroke,dStarty,dSize+bStroke,dSize+bStroke);
-		}
-		run("Fill");
-		// now paste zoom
-		makeRectangle(dStartx,dStarty,dSize,dSize);
-		run("Paste");
+		if (panelDecisions[i] == 1)	{
+			run("Select None");
+			xq = xp1 + (i * (h + grout));
+			yq = yp1 + 0; // --for future dev
+			makeRectangle(xq-(bSize/2),yq-(bSize/2),bSize,bSize);
+			run("Copy");
+			// make border
+			makeRectangle(xq-((bSize + bStroke)/2),yq-((bSize + bStroke)/2),bSize+bStroke,bSize+bStroke);
+			run("Fill");
+			makeRectangle(xq-(bSize/2),yq-(bSize/2),bSize,bSize);
+			run("Paste");
+			run("Internal Clipboard");
+			selectWindow("Clipboard");
+			cmd = "width="+dSize+" height="+dSize+" constrain average interpolation=Bilinear";
+			run("Size...", cmd);
+			run("Select All");
+			run("Copy");
+			close("Clipboard");
+			selectWindow(title);
+			// L dStartx is left side of panel; R dStartX is right side of panel - dSize
+			if (corner == "LB" || corner == "LT")	{
+				dStartx = (i * (h + grout)); // L	
+			}
+			else if (corner == "RB" || corner == "RT")	{
+				dStartx = h + (i * (h + grout)) - dSize; // R
+			}
+			// dStarty calculated outside the loop
+	
+			// make border for zoom
+			if (corner == "LB")	{
+				makeRectangle(dStartx,dStarty-bStroke,dSize+bStroke,dSize+bStroke);
+			}
+			else if (corner == "LT")	{
+				makeRectangle(dStartx,dStarty,dSize+bStroke,dSize+bStroke);
+			}
+			else if (corner == "RB")	{
+				makeRectangle(dStartx-bStroke,dStarty-bStroke,dSize+bStroke,dSize+bStroke);
+			}
+			else if (corner == "RT")	{
+				makeRectangle(dStartx-bStroke,dStarty,dSize+bStroke,dSize+bStroke);
+			}
+			run("Fill");
+			// now paste zoom
+			makeRectangle(dStartx,dStarty,dSize,dSize);
+			run("Paste");
+		}	
 	}	
 	selectWindow(title);
 	run("Select None");
