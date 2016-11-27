@@ -1,19 +1,14 @@
-/* Under development
- *  
+/* 
+ * This macro picks an ROI and makes an expanded version in the corner 
+ * The ROI and the expansion have a white border
+ * User can select the size of the ROI, the expansion, the corner and the border size
+ * It is meant to be used for montages (made with MultiMotageMacro.ijm)
+ * but will work on single square images.
+ * Open 1 image. Run Macro. Pick settings.
+ * Click in the centre of where you want your ROI to be (any panel will work).
  */
 
-
-/*
- * Read in image:
- * 	Should be able to calculate the dimensions of the montage
- * Need to ask what is
- * 	bSize
- * 	expansion size
- * 	corner
- * 
- */
-
-macro "ROI Zoom"	{
+macro "Add ROI Zoom"	{
 	if (nImages > 1)	{
 		print("ROIZoom only works on a single montage or image");
 		return;
@@ -25,6 +20,8 @@ macro "ROI Zoom"	{
 		
 	imageID = getImageID();
 	title = getTitle();
+	dir1 = getDirectory("image");
+	newName = "zooms_" + title;
 	run("Select None");
 	getDimensions(w, h, c, nFrames, dummy);
 
@@ -57,6 +54,12 @@ macro "ROI Zoom"	{
 	bStroke = Dialog.getNumber();
 	// decisions collected
 
+	// sanity check
+	if ((bSize * expand) + bStroke > h)	{
+		print("The zoomed box won't fit!");
+		return;
+	}
+
 	// User defines the centre of the box for expansion
 	setTool(7); // not sure how to force single point vs multi-point
 	waitForUser("Define box", "Click on image to centre of box for expansion");
@@ -70,21 +73,32 @@ macro "ROI Zoom"	{
 	else	{
 		print("Works with point selection only");
 	}
-	// setBatchMode(true);
-	
+	setBatchMode(true);
 	// figure out which column the selction is in
 	// each panel is h x h pixels separated by grout
 	sp = floor(xp / h);	// sp is the panel where selection is 0-based
 	// this is risky but box should not be less than grout away from panel edge
+	
 	// x and y coords relative to the panel
 	xp1 = xp - (sp * (h + grout));
-	yp1 = yp - 0; // for future dev
+	yp1 = yp - 0; // --for future dev
 	dSize = bSize * expand;
+	// --include sanity check here in case user has clicked too close to the edge
+	
+	// border will be white
 	setForegroundColor(255,255,255);
+	// T dStarty = 0; B dStarty = h - dSize
+	if (corner == "LB" || corner == "RB")	{
+		dStarty = h - dSize; // B	
+	}
+	else if (corner == "LT" || corner == "RT")	{
+		dStarty = 0; // T
+	}
+	// do the copy/pasting
 	for (i=0; i<nCol; i++)	{
 		run("Select None");
 		xq = xp1 + (i * (h + grout));
-		yq = yp1 + 0; // for future dev
+		yq = yp1 + 0; // --for future dev
 		makeRectangle(xq-(bSize/2),yq-(bSize/2),bSize,bSize);
 		run("Copy");
 		// make border
@@ -100,65 +114,36 @@ macro "ROI Zoom"	{
 		run("Copy");
 		close("Clipboard");
 		selectWindow(title);
-		dStartx = (i * (h + grout)); // L
-		dStarty = h - dSize; // B - move outside loop?
 		// L dStartx is left side of panel; R dStartX is right side of panel - dSize
-		// T dStarty = 0; B dStarty = h - dSize
-		cmd = "width="+dSize+" height="+dSize+" x="+dStartx+" y="+dStarty;
-		run("Specify...", cmd);
+		if (corner == "LB" || corner == "LT")	{
+			dStartx = (i * (h + grout)); // L	
+		}
+		else if (corner == "RB" || corner == "RT")	{
+			dStartx = h + (i * (h + grout)) - dSize; // R
+		}
+		// dStarty calculated outside the loop
+
+		// make border for zoom
+		if (corner == "LB")	{
+			makeRectangle(dStartx,dStarty-bStroke,dSize+bStroke,dSize+bStroke);
+		}
+		else if (corner == "LT")	{
+			makeRectangle(dStartx,dStarty,dSize+bStroke,dSize+bStroke);
+		}
+		else if (corner == "RB")	{
+			makeRectangle(dStartx-bStroke,dStarty-bStroke,dSize+bStroke,dSize+bStroke);
+		}
+		else if (corner == "RT")	{
+			makeRectangle(dStartx-bStroke,dStarty,dSize+bStroke,dSize+bStroke);
+		}
+		run("Fill");
+		// now paste zoom
+		makeRectangle(dStartx,dStarty,dSize,dSize);
 		run("Paste");
-	}
-}	
-
-/*
- * run("Copy");
-
-makePoint(352, 120);
-run("Restore Selection");
-setForegroundColor(255, 255, 255);
-run("Draw", "slice");
-//setTool("dropper");
-//setTool("point");
-run("Color Picker...");
-//setTool("dropper");
-run("Close");
-run("Draw", "slice");
-run("Line Width...", "line=2");
-run("Draw", "slice");
-setForegroundColor(198, 198, 198);
-makeRectangle(300, 300, 100, 100);
-setForegroundColor(198, 198, 198);
-makeRectangle(300, 300, 100, 100);
-setForegroundColor(5, 5, 5);
-makeRectangle(300, 300, 100, 100);
-setForegroundColor(173, 173, 173);
-makeRectangle(300, 300, 100, 100);
-//setTool("rectangle");
-run("In [+]");
-run("In [+]");
-run("In [+]");
-makeRectangle(546, 272, 9, 1);
-//setTool("hand");
-run("In [+]");
-run("In [+]");
-run("In [+]");
-run("In [+]");
-run("In [+]");
-run("In [+]");
-run("In [+]");
-run("Scale...");
-run("Restore Selection");
-run("Specify...", "width=100 height=100 x=300 y=300");
-makeRectangle(300, 300, 100, 100);
-makeRectangle(300, 300, 100, 100);
-makeRectangle(300, 300, 100, 100);
-
- * 
- */
-
-// do the next part      
-	
-	
-	setBatchMode(true);
+	}	
+	selectWindow(title);
+	run("Select None");
+	saveAs("TIFF", dir1+newName);
+	setBatchMode(false);
 }
 
