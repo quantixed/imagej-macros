@@ -70,14 +70,91 @@ macro "ROI Zoom"	{
 	else	{
 		print("Works with point selection only");
 	}
+	// setBatchMode(true);
+	
 	// figure out which column the selction is in
 	// each panel is h x h pixels separated by grout
-	sp = floor(xp / h);	// sp is the panel where selection is
+	sp = floor(xp / h);	// sp is the panel where selection is 0-based
 	// this is risky but box should not be less than grout away from panel edge
-	
+	// x and y coords relative to the panel
+	xp1 = xp - (sp * (h + grout));
+	yp1 = yp - 0; // for future dev
+	dSize = bSize * expand;
+	setForegroundColor(255,255,255);
+	for (i=0; i<nCol; i++)	{
+		run("Select None");
+		xq = xp1 + (i * (h + grout));
+		yq = yp1 + 0; // for future dev
+		makeRectangle(xq-(bSize/2),yq-(bSize/2),bSize,bSize);
+		run("Copy");
+		// make border
+		makeRectangle(xq-((bSize + bStroke)/2),yq-((bSize + bStroke)/2),bSize+bStroke,bSize+bStroke);
+		run("Fill");
+		makeRectangle(xq-(bSize/2),yq-(bSize/2),bSize,bSize);
+		run("Paste");
+		run("Internal Clipboard");
+		selectWindow("Clipboard");
+		cmd = "width="+dSize+" height="+dSize+" constrain average interpolation=Bilinear";
+		run("Size...", cmd);
+		run("Select All");
+		run("Copy");
+		close("Clipboard");
+		selectWindow(title);
+		dStartx = (i * (h + grout)); // L
+		dStarty = h - dSize; // B - move outside loop?
+		// L dStartx is left side of panel; R dStartX is right side of panel - dSize
+		// T dStarty = 0; B dStarty = h - dSize
+		cmd = "width="+dSize+" height="+dSize+" x="+dStartx+" y="+dStarty;
+		run("Specify...", cmd);
+		run("Paste");
+	}
 }	
 
+/*
+ * run("Copy");
 
+makePoint(352, 120);
+run("Restore Selection");
+setForegroundColor(255, 255, 255);
+run("Draw", "slice");
+//setTool("dropper");
+//setTool("point");
+run("Color Picker...");
+//setTool("dropper");
+run("Close");
+run("Draw", "slice");
+run("Line Width...", "line=2");
+run("Draw", "slice");
+setForegroundColor(198, 198, 198);
+makeRectangle(300, 300, 100, 100);
+setForegroundColor(198, 198, 198);
+makeRectangle(300, 300, 100, 100);
+setForegroundColor(5, 5, 5);
+makeRectangle(300, 300, 100, 100);
+setForegroundColor(173, 173, 173);
+makeRectangle(300, 300, 100, 100);
+//setTool("rectangle");
+run("In [+]");
+run("In [+]");
+run("In [+]");
+makeRectangle(546, 272, 9, 1);
+//setTool("hand");
+run("In [+]");
+run("In [+]");
+run("In [+]");
+run("In [+]");
+run("In [+]");
+run("In [+]");
+run("In [+]");
+run("Scale...");
+run("Restore Selection");
+run("Specify...", "width=100 height=100 x=300 y=300");
+makeRectangle(300, 300, 100, 100);
+makeRectangle(300, 300, 100, 100);
+makeRectangle(300, 300, 100, 100);
+
+ * 
+ */
 
 // do the next part      
 	
