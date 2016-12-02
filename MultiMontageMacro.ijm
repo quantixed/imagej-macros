@@ -9,14 +9,15 @@
  Use "Flexible Montage Maker" for images with >3 channels or >3 frames (it works for RGB too).
  You can add up to four grayscale channel panels and up to two merges that you specify.
  As for simple montage, you can specify the grout and scale bar.
+
+ There are now vertical options for these two montage makers.
+
+ Batch processing of a directory TIFFs is possible for Simple Montage (RGB).
 */
 
 
-// -- add batch Flexible Montage Maker
+// -- add batch Flexible Montage Maker? Difficult to do because of channel choice
 // -- add a thing to make a series of images
-// -- add ability to do this vertically
-// partly there for vertical montages. converted simple montage. need to do flexible montage.
-// add a dialog box to pick at start?
 
 macro "Multi-purpose Montage Maker"	{
 	// this will take a guess at what you want to do
@@ -26,7 +27,7 @@ macro "Multi-purpose Montage Maker"	{
 	if (bitDepth() == 24)
 		rgb2Montage("");
 	else if (bitDepth() == 8 || bitDepth() == 16)
-		montageFrom16Bit();
+		montageFrom16Bit("");
 }
 
 macro "Simple Montage (RGB)" {
@@ -42,12 +43,12 @@ macro "Flexible Montage Maker" {
 	filepath=File.openDialog("Select a File"); 
 	open(filepath);
 	if (bitDepth() == 8 || bitDepth() == 16)
-		montageFrom16Bit();
+		montageFrom16Bit("");
 	else if (bitDepth() == 24)	{
 		// this won't work if someone feeds a stack of RGB images
 		run("Split Channels");
 		run("Images to Stack");
-		montageFrom16Bit();
+		montageFrom16Bit("");
 	}
 }
 
@@ -160,6 +161,20 @@ macro "Simple Vertical Montage (RGB)" {
 		rgb2Montage("vert");
 }
 
+macro "Flexible Vertical Montage Maker" {
+	if (nImages > 0) exit ("Please close all open images");
+	filepath=File.openDialog("Select a File"); 
+	open(filepath);
+	if (bitDepth() == 8 || bitDepth() == 16)
+		montageFrom16Bit("vert");
+	else if (bitDepth() == 24)	{
+		// this won't work if someone feeds a stack of RGB images
+		run("Split Channels");
+		run("Images to Stack");
+		montageFrom16Bit("vert");
+	}
+}
+
 function rgb2Montage(vChoice)	{
 	Dialog.create("Montage Choice"); 
 	Dialog.addMessage("How many panels?");
@@ -240,7 +255,10 @@ function rgb2Montage(vChoice)	{
 	setBatchMode(false);
 }
 
-function montageFrom16Bit()	{
+function montageFrom16Bit(vChoice)	{
+	// rotate left?
+	if (vChoice == "vert")
+		run("Rotate 90 Degrees Left");
 	dir1 = getDirectory("image");
 	// check how many slices/channels
 	Stack.getDimensions(width, height, channels, slices, frames);
@@ -284,22 +302,22 @@ function montageFrom16Bit()	{
 	Dialog.addMessage("Select order for grayscale");
 	// variations based on number of files
 	if (gVar==1)	{
-		Dialog.addChoice("Left", colArray);
+		Dialog.addChoice("Gray Panel 1", colArray);
 	}
 	else if (gVar==2)	{
-		Dialog.addChoice("Left", colArray);
-		Dialog.addChoice("Right", colArray);
+		Dialog.addChoice("Gray Panel 1", colArray);
+		Dialog.addChoice("Gray Panel 2", colArray);
 	}
 	else if (gVar==3)	{
-		Dialog.addChoice("Left", colArray);
-		Dialog.addChoice("Middle", colArray);
-		Dialog.addChoice("Right", colArray);
+		Dialog.addChoice("Gray Panel 1", colArray);
+		Dialog.addChoice("Gray Panel 2", colArray);
+		Dialog.addChoice("Gray Panel 3", colArray);
 	}
 	else if (gVar==4)	{
-		Dialog.addChoice("Left", colArray);
-		Dialog.addChoice("Left Mid", colArray);
-		Dialog.addChoice("Right Mid", colArray);
-		Dialog.addChoice("Right", colArray);
+		Dialog.addChoice("Gray Panel 1", colArray);
+		Dialog.addChoice("Gray Panel 2", colArray);
+		Dialog.addChoice("Gray Panel 3", colArray);
+		Dialog.addChoice("Gray Panel 4", colArray);
 	}
 	// variations based on merges
 	if (mVar==0)	{
@@ -409,6 +427,10 @@ function montageFrom16Bit()	{
 	}
 	
 	selectImage(newName);
+		// rotate right?
+	if (vChoice == "vert")
+		run("Rotate 90 Degrees Right");
+	
 	//add scale bar (height is same as grout)
 	if (sbchoice==true)	{
 		getDimensions(w, h, c, nFrames, dummy);
@@ -418,6 +440,7 @@ function montageFrom16Bit()	{
 	//specify dpi default is 300 dpi
 	run("Set Scale...", "distance=res known=1 unit=inch");
 	run("Select None");
+
 	//save montage
 	saveAs("TIFF", dir1+newName);
 	setBatchMode(false);
