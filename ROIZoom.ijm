@@ -10,14 +10,8 @@
  */
 
 macro "Add ROI Zoom"	{
-	if (nImages > 1)	{
-		print("ROIZoom only works on a single montage or image");
-		return;
-	}
-	if (nImages == 0)	{
-		print("No image open");
-		return;
-	}
+	if (nImages > 1) exit ("Use a single image or single montage");
+	if (nImages == 0)	exit("No image open");
 		
 	imageID = getImageID();
 	title = getTitle();
@@ -66,12 +60,13 @@ macro "Add ROI Zoom"	{
 		panelDecisions[i] = Dialog.getCheckbox();
 	}
 	// decisions collected
-
-	// sanity check
-	if ((bSize * expand) + bStroke > h)	{
-		print("The zoomed box won't fit!");
-		return;
-	}
+	dSize = bSize * expand;
+	// sanity check in case zoom is bigger than panel
+	if (dSize > h)	exit("Zoom will be too big, use different expansion");
+	// maybe they want to make the zoom the width of panel, let them but limit stroke so it doesn't go into next panel
+	if (dSize == h && bStroke > grout)	exit("Use different stroke size to do this");
+	// entered a silly number
+	if (bStroke > 20 * grout)	exit("Use a smaller stroke size");
 
 	// User defines the centre of the box for expansion
 	setTool(7); // not sure how to force single point vs multi-point
@@ -80,24 +75,24 @@ macro "Add ROI Zoom"	{
 		getBoundingRect(xp, yp, width, height);
 		// print("x="+xp+" y="+yp+" "+width+" "+height);
 		makeRectangle(xp-(bSize/2),yp-(bSize/2),bSize,bSize);
-		// need to do something where user clicks too close to the edge
 		selectImage(imageID);
 	}
-	else	{
-		print("Works with point selection only");
-	}
-	setBatchMode(true);
+	else	exit("Works with point selection only");
+
 	// figure out which column the selction is in
 	// each panel is h x h pixels separated by grout
 	sp = floor(xp / h);	// sp is the panel where selection is 0-based
-	// --this is risky but box should not be less than grout away from panel edge
+	// this is risky but box should not be less than grout away from panel edge
+	// will fail in cases of large grout or many panels.
 	
-	// x and y coords relative to the panel
+	// x and y coords of ROI centre relative to the panel LT
 	xp1 = xp - (sp * (h + grout));
 	yp1 = yp - 0; // --for future dev
-	dSize = bSize * expand;
-	// --include sanity check here in case user has clicked too close to the edge
+	// sanity check in case user has clicked too close to the edge
+	if (xp1-(bSize/2) < 0 || yp1-(bSize/2) < 0)	exit("Try again, too close to the edge");
+	if (xp1+(bSize/2) > h || yp1+(bSize/2) > h)	exit("Try again, too close to the edge");
 	
+	setBatchMode(true);
 	// border will be white
 	setForegroundColor(255,255,255);
 	// T dStarty = 0; B dStarty = h - dSize
