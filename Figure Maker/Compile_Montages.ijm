@@ -1,16 +1,22 @@
 /*
- * The idea is to compile montage images to make a figure
+ * Compile montage images to make a figure.
+ * User can choose to:
+ * 1) array row montages vertically, or
+ * 2) array column montages horizontally
  */
 
-macro "Compile Montages"	{
-	if (nImages < 2)	{
-		print("2 or more images are required");
-		return;
-	}
-	else if (nImages >4)	{
-		print("I can only compile 4 images in this version");
-		return;
-	}
+macro "Compile Row Montages"	{
+	if (nImages < 2) exit ("2 or more images are required");
+	compmtg("");
+}
+
+macro "Compile Column Montages"	{
+	if (nImages < 2) exit ("2 or more images are required");
+	compmtg("vert");
+}
+
+function compmtg(vChoice)	{
+	// vChoice is vert if we will do horizontal array
 	imgArray = newArray(nImages);
 	rowArray = newArray(nImages);
 	nameArray = newArray(nImages);
@@ -20,13 +26,9 @@ macro "Compile Montages"	{
 		imgArray[i] = getImageID();
 		title = getTitle();
 		rowArray[i] = title;
-	    print((i+1) + " : " + title);
 	}
+	len = imgArray.length;
 	
-	if (isOpen("Log")) { 
-	    selectWindow("Log"); 
-	    setLocation(10, 50); 
-	} 
 	// Standard sizes
 	grout = 16;
 	res = 300;
@@ -34,22 +36,16 @@ macro "Compile Montages"	{
 	mag = 0.069;
 	// Make dialog box
 	Dialog.create("Compile Montages"); 
-	Dialog.addMessage("Select order for your compilation");
 	// variations based on number of files
-	if (imgArray.length==2)	{
-		Dialog.addChoice("Top", rowArray);
-		Dialog.addChoice("Bottom", rowArray);
+	if (vChoice == "vert")	{
+		Dialog.addMessage("Select order for your compilation, left to right");
 	}
-	else if (imgArray.length==3)	{
-		Dialog.addChoice("Top", rowArray);
-		Dialog.addChoice("Middle", rowArray);
-		Dialog.addChoice("Bottom", rowArray);
+	else {
+		Dialog.addMessage("Select order for your compilation, top to bottom");
 	}
-	else if (imgArray.length==4)	{
-		Dialog.addChoice("Top", rowArray);
-		Dialog.addChoice("Upper Mid", rowArray);
-		Dialog.addChoice("Lower Mid", rowArray);
-		Dialog.addChoice("Bottom", rowArray);
+	for (i = 0; i < len; i ++)	{
+		labStr = d2s(i+1,0);
+		Dialog.addChoice(labStr, rowArray);
 	}
 	Dialog.addNumber("Row gap (px, default = 2 x grout):", 16);
 	Dialog.addNumber("d.p.i.", 300);
@@ -58,20 +54,8 @@ macro "Compile Montages"	{
 	Dialog.addNumber("1 px is how many µm?", 0.069);
 	Dialog.show();
 	// variations based on number of files
-	if (imgArray.length==2)	{
-		nameArray[0] = Dialog.getChoice();
-		nameArray[1] = Dialog.getChoice();
-	}
-	else if (imgArray.length==3)	{
-		nameArray[0] = Dialog.getChoice();
-		nameArray[1] = Dialog.getChoice();
-		nameArray[2] = Dialog.getChoice();
-	}
-	else if (imgArray.length==4)	{
-		nameArray[0] = Dialog.getChoice();
-		nameArray[1] = Dialog.getChoice();
-		nameArray[2] = Dialog.getChoice();
-		nameArray[3] = Dialog.getChoice();
+	for (i = 0; i < len; i ++)	{
+		nameArray[i] = Dialog.getChoice();
 	}
 	grout = Dialog.getNumber();
 	res = Dialog.getNumber();
@@ -84,7 +68,6 @@ macro "Compile Montages"	{
 	// setup for save
 	win = getTitle();
 	dir1 = getDirectory("image");
-	len = imgArray.length;
 	newName = "cmp" + len + win;
 	
 	// get dimensions
@@ -95,6 +78,8 @@ macro "Compile Montages"	{
 	height = 0;
 	for (i=0; i<len; i++)   {
 		selectImage(nameArray[i]);
+		if (vChoice == "vert")
+			run("Rotate 90 Degrees Right");
 		getDimensions(w, h, c, nFrames, dummy);
 		wArray[i] = w;
 		hArray[i] = h;
@@ -111,10 +96,14 @@ macro "Compile Montages"	{
 		selectImage(nameArray[i]);
 		run("Select All");
 		run("Copy");
+		close();
 		selectImage(newName);
 		makeRectangle(0, (hPosArray[i])+(grout*i), wArray[i], hArray[i]);
 		run("Paste");
 	}
+	// now put back?
+	if (vChoice == "vert")
+		run("Rotate 90 Degrees Left");
 	//add scale bar (height is same as grout)
 	if (sbchoice==true)	{
 		getDimensions(w, h, c, nFrames, dummy);
@@ -123,12 +112,8 @@ macro "Compile Montages"	{
 	}
 	//specify dpi default is 300 dpi
 	run("Set Scale...", "distance=res known=1 unit=inch");
+	run("Select None");
 	//save montage
 	saveAs("TIFF", dir1+newName);
 	setBatchMode(false);
-	/*
-	// close tempstack "stk"
-	selectWindow("stk");
-	close();
-	*/
 }
