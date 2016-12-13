@@ -5,11 +5,6 @@
  * 2) array column montages horizontally
  */
 
-macro "Compile Row Montages"	{
-	if (nImages < 2) exit ("2 or more images are required");
-	compmtg("");
-}
-
 macro "Compile Column Montages"	{
 	if (nImages < 2) exit ("2 or more images are required");
 	compmtg("vert");

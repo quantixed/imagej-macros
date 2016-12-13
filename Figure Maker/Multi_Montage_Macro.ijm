@@ -1,33 +1,24 @@
 /*
  The aim is to make montages the way we like them.
- Grayscale single channels with a merge on the right.
+ Horizontal - grayscale single channels with merge(s) on the right
+ Vertical - grayscale single channels with merge(s) on the bottom
  
  If you have a 3 channel RGB TIFF (1 slice), you can make a 3 or 4 panel
- montage with "Simple Montage (RGB)". Specify order of grayscale channels, merge is on right.
+ simple montage with "Montage Horizontal RGB". Specify the order of grayscale channels, merge is on right.
  Also specify grouting for the montage. There's no outside border, but there is an option to add a scale bar.
+ There is a vertical version called "Montage Vertical RGB"
  
- Use "Flexible Montage Maker" for images with >3 channels or >3 frames (it works for RGB too).
- You can add up to four grayscale channel panels and up to two merges that you specify.
- As for simple montage, you can specify the grout and scale bar.
+ For more flexible montages you can use "Montage Horizontal Flexible" (or the vertical version)
+ It should work for all images (>1 chnnel or slice) including a single frame RGB.
+ You can arange grayscale channel panels and up to two merges that you specify.
+ As for the simple montage, you can specify the grout and scale bar.
 
- There are now vertical options for these two montage makers.
-
- Batch processing of a directory TIFFs is possible for Simple Montage (RGB).
+ Batch processing of a directory TIFFs is possible for "Montage Horizontal RGB".
+ In this case specify your first montage and the rest of the directory will be processed in the same way.
 */
 
 
-macro "Multi-purpose Montage Maker"	{
-	// this will take a guess at what you want to do
-	if (nImages > 0) exit ("Please close all open images");
-	filepath=File.openDialog("Select a File"); 
-	open(filepath);
-	if (bitDepth() == 24)
-		rgb2Montage("");
-	else if (bitDepth() == 8 || bitDepth() == 16)
-		montageFrom16Bit("");
-}
-
-macro "Simple Montage (RGB)" {
+macro "Montage Horizontal RGB" {
 	if (nImages > 0) exit ("Please close all open images");
 	filepath=File.openDialog("Select a File"); 
 	open(filepath);
@@ -35,7 +26,7 @@ macro "Simple Montage (RGB)" {
 		rgb2Montage("");
 }
 
-macro "Flexible Montage Maker" {
+macro "Montage Horizontal Flexible" {
 	if (nImages > 0) exit ("Please close all open images");
 	filepath=File.openDialog("Select a File"); 
 	open(filepath);
@@ -49,7 +40,7 @@ macro "Flexible Montage Maker" {
 	}
 }
 
-macro "Simple Montage on Directory"	{
+macro "Montage Horizontal RGB on Directory"	{
 	if (nImages > 0) exit ("Please close all open images");
 	dir1 = getDirectory("Choose Source Directory ");
 	dir2 = getDirectory("Choose Destination Directory ");
@@ -150,7 +141,7 @@ macro "Simple Montage on Directory"	{
 	setBatchMode(false);
 }
 
-macro "Simple Vertical Montage (RGB)" {
+macro "Montage Vertical RGB" {
 	if (nImages > 0) exit ("Please close all open images");
 	filepath=File.openDialog("Select a File"); 
 	open(filepath);
@@ -158,7 +149,7 @@ macro "Simple Vertical Montage (RGB)" {
 		rgb2Montage("vert");
 }
 
-macro "Flexible Vertical Montage Maker" {
+macro "Montage Vertical Flexible" {
 	if (nImages > 0) exit ("Please close all open images");
 	filepath=File.openDialog("Select a File"); 
 	open(filepath);
