@@ -1,10 +1,12 @@
 # imagej-macros
-Macros for ImageJ/FIJI that we are using in the lab. They are simple utilities.
+Some simple macros for ImageJ/FIJI that we are using in the lab.
 
-###Making Figures
+**Update:** these tools are now available via the *quantixed* ImageJ update site. 
+
+###Figure Maker
 There are four macros to make figures with montages - made the way we like them!
 
-1. **Prepare your images**: Load in your image and use `ClickSquareROI.ijm` macro tool to define a square ROI to crop your image. Optional: use `MakeNISPureRGB.ijm` if using images that have mixed LUTs. Save this TIFF.
+1. **Prepare your images**: Load in your image and use `Click Square ROI.txt` macro tool to define a square ROI to crop your image. Optional: use `MakeNISPureRGB.ijm` if using images that have mixed LUTs. Save this TIFF.
 
 2. **Make a montage row**: Use `MultiMontageMacro.ijm` to make a nicely spaced row of images. You can do two things:
 
