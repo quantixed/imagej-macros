@@ -18,28 +18,6 @@
 */
 
 
-macro "Montage Horizontal RGB" {
-	if (nImages > 0) exit ("Please close all open images");
-	filepath=File.openDialog("Select a File"); 
-	open(filepath);
-	if (bitDepth() != 24) exit ("RGB image required.");
-		rgb2Montage("");
-}
-
-macro "Montage Horizontal Flexible" {
-	if (nImages > 0) exit ("Please close all open images");
-	filepath=File.openDialog("Select a File"); 
-	open(filepath);
-	if (bitDepth() == 8 || bitDepth() == 16)
-		montageFrom16Bit("");
-	else if (bitDepth() == 24)	{
-		// this won't work if someone feeds a stack of RGB images
-		run("Split Channels");
-		run("Images to Stack");
-		montageFrom16Bit("");
-	}
-}
-
 macro "Montage Horizontal RGB on Directory"	{
 	if (nImages > 0) exit ("Please close all open images");
 	dir1 = getDirectory("Choose Source Directory ");
@@ -140,26 +118,3 @@ macro "Montage Horizontal RGB on Directory"	{
 	}
 	setBatchMode(false);
 }
-
-macro "Montage Vertical RGB" {
-	if (nImages > 0) exit ("Please close all open images");
-	filepath=File.openDialog("Select a File"); 
-	open(filepath);
-	if (bitDepth() != 24) exit ("RGB image required.");
-		rgb2Montage("vert");
-}
-
-macro "Montage Vertical Flexible" {
-	if (nImages > 0) exit ("Please close all open images");
-	filepath=File.openDialog("Select a File"); 
-	open(filepath);
-	if (bitDepth() == 8 || bitDepth() == 16)
-		montageFrom16Bit("vert");
-	else if (bitDepth() == 24)	{
-		// this won't work if someone feeds a stack of RGB images
-		run("Split Channels");
-		run("Images to Stack");
-		montageFrom16Bit("vert");
-	}
-}
-
