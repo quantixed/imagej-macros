@@ -12,7 +12,7 @@ Some simple macros for ImageJ/FIJI that we are using in the lab. These tools are
 3. [Other Utilities](#other-utilities)
 
 ###Figure Maker
-There are macros to help you to make figures with montages - made the way we like them!
+There are macros to help you to make figures with montages - made the way we like them! There are other plugins for making figures in ImageJ but none did what we [wanted](#figures-the-quantixed-way), so we made our own.
 
 ####Prepare your images
 Load in your multichannel image, adjust how you want and then crop.
@@ -89,6 +89,7 @@ For multichannel microscopy images, e.g. from an immunofluorescence experiment, 
 4. Fixed grout of 8 pixels (suggested)
 6. Scale bar of 10 µm, height of 2 x grout (suggested)
 7. Grouting between conditions is 2 x grout between channels (suggested)
+8. Labelling is done in Illustrator or some other software to assemble the final figure, *not* in ImageJ
 
 ###Blind Analysis
 `BlindAnalysis.ijm` Takes a directory of TIFFs, strips the label from them and saves them with a blinded name. A tsv called `log.txt` is created to log the association between the original file and the blinded copy. Works on TIFF only.
