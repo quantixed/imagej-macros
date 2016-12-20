@@ -86,7 +86,6 @@ function montageFrom16Bit(vChoice)	{
 	// check how many slices/channels
 	Stack.getDimensions(width, height, channels, slices, frames);
 	if (channels * slices * frames == 1) exit ("Need more than one channel or slice or frame");
-	run("Grays");
 	run("Stack to Images");
 	imgArray = newArray(nImages);
 	colArray = newArray(nImages);
@@ -94,6 +93,7 @@ function montageFrom16Bit(vChoice)	{
 	mArray[0] = "*None*";
 	for (i=0; i<nImages; i++)	{
 		selectImage(i+1);
+		run("Grays");
 		imgArray[i] = getImageID();
 		title = getTitle();
 		colArray[i] = title;
