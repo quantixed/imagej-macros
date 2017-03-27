@@ -11,10 +11,14 @@ Some simple macros for ImageJ/FIJI that we are using in the lab. These tools are
 2. [Blind Analysis](#blind-analysis)
 3. [Other Utilities](#other-utilities)
 
+
 ###Figure Maker
+
 There are macros to help you to make figures with montages - made the way we like them! There are other plugins for making figures in ImageJ but none did what we [wanted](#figures-the-quantixed-way), so we made our own.
 
+
 ####Prepare your images
+
 Load in your multichannel image, adjust how you want and then crop.
 To do this select *Click Square ROI* from the >> on the toolbar.
 ![fm001](https://cloud.githubusercontent.com/assets/13585138/21343084/102d6bac-c68d-11e6-9b60-44a104d398be.jpg)
@@ -24,7 +28,9 @@ Select the area you want.
 Crop your images and save them as TIFFs.
 ![fm004](https://cloud.githubusercontent.com/assets/13585138/21343086/102eaf44-c68d-11e6-9d9a-1f64e56ba5f3.jpg)
 
+
 ####Make a montage row
+
 To make a nicely spaced montage (row of images). Select *Plugins>quantixed>Figure Maker>Montage Horizontal Flexible*
 
 Note that there are other options here: to make a simple RGB montage (this is good for three channel images were you just want one merge panel, this also works on whole directories), there are [vertical montage](#i-want-columns-not-rows) options for flexible and RGB montages.
@@ -47,7 +53,9 @@ Your montage is saved in the same directory as the original image. The macro lea
 
 ![fm009](https://cloud.githubusercontent.com/assets/13585138/21343091/104e877e-c68d-11e6-9117-0876f4418d7e.jpg)
 
+
 ####Optional: add ROIs and zooms
+
 Sometimes, we like to add a ROI and a zoomed version of this ROI to various panels in the montage. To do this open your montage and select *Plugins>quantixed>Figure Maker>ROI Zoom*
 
 ![fm013](https://cloud.githubusercontent.com/assets/13585138/21343095/10675182-c68d-11e6-9098-49bbc239a2b1.jpg)
@@ -80,6 +88,7 @@ This is fine. Just select *Plugins>quantixed>Figure Maker>Montage Vertical Flexi
 
 Remember that when you compile vertical montages, you need to select *Plugins>quantixed>Figure Maker>Compile Column Montages*
 
+
 ####Figures the quantixed way
 
 For multichannel microscopy images, e.g. from an immunofluorescence experiment, *quantixed* follows these rules for best practice.
@@ -94,11 +103,13 @@ For multichannel microscopy images, e.g. from an immunofluorescence experiment, 
 7. Grouting between conditions is 2 x grout between channels (suggested)
 8. Labelling is done in Illustrator or some other software to assemble the final figure, *not* in ImageJ
 
+
 ###Blind Analysis
 
 `BlindAnalysis.ijm` Takes a directory of TIFFs, strips the label from them and saves them with a blinded name. A tsv called `log.txt` is created to log the association between the original file and the blinded copy. Works on TIFF only.
 
 `RemoveLabels.ijm` Takes a directory of TIFFs and removes the label from the file for blinding. Use another method for changing filenames.
+
 
 ###Other utilities
 
