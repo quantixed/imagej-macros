@@ -60,6 +60,7 @@ After clicking OK, you are asked to select the centre of the ROI.
 
 
 ####Now put the rows together
+
 Finally, if we have more than one montage, we need to compile them together. Load in all the montages you'd like to compile. Now select *Plugins>quantixed>Figure Maker>Compile Row Montages*
 
 ![fm010](https://cloud.githubusercontent.com/assets/13585138/21343092/105b0648-c68d-11e6-8c66-d6f371a17452.jpg)
@@ -74,11 +75,13 @@ Your compilation will save back in the same directory as the montages. Note, tha
 
 
 ####I want columns not rows
+
 This is fine. Just select *Plugins>quantixed>Figure Maker>Montage Vertical Flexible* This will do the same thing but put the channels vertically with any merges at the bottom. Note that there is a version to make simple RGB montages. There is a vertical version of this too.
 
 Remember that when you compile vertical montages, you need to select *Plugins>quantixed>Figure Maker>Compile Column Montages*
 
 ####Figures the quantixed way
+
 For multichannel microscopy images, e.g. from an immunofluorescence experiment, *quantixed* follows these rules for best practice.
 
 1. Individual channels as grayscale - reason: the eye does not detect black-to-red in the same way as black-to-green
@@ -92,6 +95,7 @@ For multichannel microscopy images, e.g. from an immunofluorescence experiment, 
 8. Labelling is done in Illustrator or some other software to assemble the final figure, *not* in ImageJ
 
 ###Blind Analysis
+
 `BlindAnalysis.ijm` Takes a directory of TIFFs, strips the label from them and saves them with a blinded name. A tsv called `log.txt` is created to log the association between the original file and the blinded copy. Works on TIFF only.
 
 `RemoveLabels.ijm` Takes a directory of TIFFs and removes the label from the file for blinding. Use another method for changing filenames.
