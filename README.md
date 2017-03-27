@@ -1,6 +1,8 @@
 # imagej-macros
 Some simple macros for ImageJ/FIJI that we are using in the lab. These tools are now available via the *quantixed* ImageJ [update site](http://sites.imagej.net/Quantixed/). Instructions for how to follow a 3rd party update site are [here](http://imagej.net/How_to_follow_a_3rd_party_update_site). This is the best way to install these macros and maintain the latest versions.
 
+## Quick links
+
 1. [Figure Maker](#figure-maker)
 	1. Prepare your [images](#prepare-your-images)
 	2. Make a [montage](#montage)
