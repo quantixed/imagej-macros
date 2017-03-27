@@ -14,12 +14,12 @@ Some simple macros for ImageJ/FIJI that we are using in the lab. These tools are
 3. [Other Utilities](#other-utilities)
 
 
-###Figure Maker
+### Figure Maker
 
 There are macros to help you to make figures with montages - made the way we like them! There are other plugins for making figures in ImageJ but none did what we [wanted](#figures-the-quantixed-way), so we made our own.
 
 
-####Prepare your images
+#### Prepare your images
 
 Load in your multichannel image, adjust how you want and then crop.
 To do this select *Click Square ROI* from the >> on the toolbar.
@@ -31,7 +31,7 @@ Crop your images and save them as TIFFs.
 ![fm004](https://cloud.githubusercontent.com/assets/13585138/21343086/102eaf44-c68d-11e6-9d9a-1f64e56ba5f3.jpg)
 
 
-####Make a montage row
+#### Make a montage row
 
 To make a nicely spaced montage (row of images). Select *Plugins>quantixed>Figure Maker>Montage Horizontal Flexible*
 
@@ -56,7 +56,7 @@ Your montage is saved in the same directory as the original image. The macro lea
 ![fm009](https://cloud.githubusercontent.com/assets/13585138/21343091/104e877e-c68d-11e6-9117-0876f4418d7e.jpg)
 
 
-####Optional: add ROIs and zooms
+#### Optional: add ROIs and zooms
 
 Sometimes, we like to add a ROI and a zoomed version of this ROI to various panels in the montage. To do this open your montage and select *Plugins>quantixed>Figure Maker>ROI Zoom*
 
@@ -69,7 +69,7 @@ After clicking OK, you are asked to select the centre of the ROI.
 ![fm014](https://cloud.githubusercontent.com/assets/13585138/21343096/1069deac-c68d-11e6-9b24-61ea7f380bb7.jpg)
 
 
-####Now put the rows together
+#### Now put the rows together
 
 Finally, if we have more than one montage, we need to compile them together. Load in all the montages you'd like to compile. Now select *Plugins>quantixed>Figure Maker>Compile Row Montages*
 
@@ -84,14 +84,14 @@ Your compilation will save back in the same directory as the montages. Note, tha
 ![fm012](https://cloud.githubusercontent.com/assets/13585138/21343094/1066f890-c68d-11e6-94d6-8141bc44bf7d.jpg)
 
 
-####I want columns not rows
+#### I want columns not rows
 
 This is fine. Just select *Plugins>quantixed>Figure Maker>Montage Vertical Flexible* This will do the same thing but put the channels vertically with any merges at the bottom. Note that there is a version to make simple RGB montages. There is a vertical version of this too.
 
 Remember that when you compile vertical montages, you need to select *Plugins>quantixed>Figure Maker>Compile Column Montages*
 
 
-####Figures the quantixed way
+#### Figures the quantixed way
 
 For multichannel microscopy images, e.g. from an immunofluorescence experiment, *quantixed* follows these rules for best practice.
 
@@ -106,14 +106,14 @@ For multichannel microscopy images, e.g. from an immunofluorescence experiment, 
 8. Labelling is done in Illustrator or some other software to assemble the final figure, *not* in ImageJ
 
 
-###Blind Analysis
+### Blind Analysis
 
 `BlindAnalysis.ijm` Takes a directory of TIFFs, strips the label from them and saves them with a blinded name. A tsv called `log.txt` is created to log the association between the original file and the blinded copy. Works on TIFF only.
 
 `RemoveLabels.ijm` Takes a directory of TIFFs and removes the label from the file for blinding. Use another method for changing filenames.
 
 
-###Other utilities
+### Other utilities
 
 Open all the nd2 files in a directory and save them as TIFF to another directory with `nd2SaveAsTiff.ijm`.
 
