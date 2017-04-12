@@ -19,6 +19,10 @@
 
 
 macro "Montage Horizontal Flexible" {
+	qFpath = getDirectory("plugins")+"quantixed/Figure Maker/qFunctions.txt"; 
+    functions = File.openAsString(qFpath); 
+    call("ij.macro.Interpreter.setAdditionalFunctions", functions);
+    
 	if (nImages > 0) exit ("Please close all open images");
 	filepath=File.openDialog("Select a File"); 
 	open(filepath);

@@ -10,6 +10,10 @@
  */
 
 macro "Add ROI Zoom"	{
+	qFpath = getDirectory("plugins")+"quantixed/Figure Maker/qFunctions.txt"; 
+    functions = File.openAsString(qFpath); 
+    call("ij.macro.Interpreter.setAdditionalFunctions", functions);
+    
 	if (nImages > 1) exit ("Use a single image or single montage");
 	if (nImages == 0)	exit("No image open");
 		

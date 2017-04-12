@@ -19,6 +19,10 @@
 
 
 macro "Montage Horizontal RGB on Directory"	{
+	qFpath = getDirectory("plugins")+"quantixed/Figure Maker/qFunctions.txt"; 
+    functions = File.openAsString(qFpath); 
+    call("ij.macro.Interpreter.setAdditionalFunctions", functions);
+    
 	if (nImages > 0) exit ("Please close all open images");
 	dir1 = getDirectory("Choose Source Directory ");
 	dir2 = getDirectory("Choose Destination Directory ");
