@@ -213,6 +213,8 @@ function montageFrom16Bit(vChoice)	{
 	
 	// collect details from images
 	win = getTitle(); // could change this so that name is something more logical
+	win = replace(win,"c:","");
+	win = replace(win,"/","");
 	newName = "mtg" + win;
 	len = gVar + mVar;
 	newImage(newName, "RGB", ((width*len)+(grout*(len-1))), height, 1);
