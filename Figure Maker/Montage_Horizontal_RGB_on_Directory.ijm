@@ -2,12 +2,12 @@
  The aim is to make montages the way we like them.
  Horizontal - grayscale single channels with merge(s) on the right
  Vertical - grayscale single channels with merge(s) on the bottom
- 
+
  If you have a 3 channel RGB TIFF (1 slice), you can make a 3 or 4 panel
  simple montage with "Montage Horizontal RGB". Specify the order of grayscale channels, merge is on right.
  Also specify grouting for the montage. There's no outside border, but there is an option to add a scale bar.
  There is a vertical version called "Montage Vertical RGB"
- 
+
  For more flexible montages you can use "Montage Horizontal Flexible" (or the vertical version)
  It should work for all images (>1 chnnel or slice) including a single frame RGB.
  You can arange grayscale channel panels and up to two merges that you specify.
@@ -19,10 +19,13 @@
 
 
 macro "Montage Horizontal RGB on Directory"	{
-	qFpath = getDirectory("plugins")+"quantixed/Figure Maker/qFunctions.txt"; 
-    functions = File.openAsString(qFpath); 
+  s=call("ij.macro.Interpreter.getAdditionalFunctions");
+  if(startsWith(s,"//qFunctions")!=1) {
+    qFpath = getDirectory("plugins")+"quantixed/Figure Maker/qFunctions.txt";
+    functions = File.openAsString(qFpath);
     call("ij.macro.Interpreter.setAdditionalFunctions", functions);
-    
+    delay(3000);
+  }
 	if (nImages > 0) exit ("Please close all open images");
 	dir1 = getDirectory("Choose Source Directory ");
 	dir2 = getDirectory("Choose Destination Directory ");
@@ -30,9 +33,9 @@ macro "Montage Horizontal RGB on Directory"	{
 
 	tiffnum = 0;
 	// How many TIFFs do we have? Directory could contain other directories.
-	for (i=0; i<list.length; i++) {		
- 		if (indexOf(toLowerCase(list[i]), ".tif")>0) {	
- 			tiffnum=tiffnum+1;		
+	for (i=0; i<list.length; i++) {
+ 		if (indexOf(toLowerCase(list[i]), ".tif")>0) {
+ 			tiffnum=tiffnum+1;
  		}
  	}
  	tifflist = newArray(tiffnum);
@@ -47,7 +50,7 @@ macro "Montage Horizontal RGB on Directory"	{
 		}
 	}
 	// there is no check that all images are RGB, square etc.
-	Dialog.create("Montage Choice"); 
+	Dialog.create("Montage Choice");
 	Dialog.addMessage("How many panels?");
 	Dialog.addMessage("Four Panels (three channels + merge)");
 	Dialog.addMessage("Three Panels (two channels + merge)");
@@ -62,7 +65,7 @@ macro "Montage Horizontal RGB on Directory"	{
 	Dialog.addMessage("What layout would you like?");
 	if (panels=="4")
 		Dialog.addChoice("Four Panels (three channels + merge):", fourpanel);
-	else 
+	else
 		Dialog.addChoice("Three Panels (two channels + merge):", threepanel);
 	Dialog.addNumber("Grout size (pixels):", 8);
 	Dialog.addNumber("d.p.i.", 300);

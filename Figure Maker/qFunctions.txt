@@ -1,5 +1,6 @@
+//qFunctions
 function rgb2Montage(vChoice)	{
-	Dialog.create("Montage Choice"); 
+	Dialog.create("Montage Choice");
 	Dialog.addMessage("How many panels?");
 	Dialog.addMessage("Four Panels (three channels + merge)");
 	Dialog.addMessage("Three Panels (two channels + merge)");
@@ -14,7 +15,7 @@ function rgb2Montage(vChoice)	{
 	Dialog.addMessage("What layout would you like?");
 	if (panels=="4")
 		Dialog.addChoice("Four Panels (three channels + merge):", fourpanel);
-	else 
+	else
 		Dialog.addChoice("Three Panels (two channels + merge):", threepanel);
 	Dialog.addNumber("Grout size (pixels):", 8);
 	Dialog.addNumber("d.p.i.", 300);
@@ -100,7 +101,7 @@ function montageFrom16Bit(vChoice)	{
 		mArray[i+1] = title;
 	}
 	// give the option of making up to 2 merges
-	Dialog.create("Montage Choice"); 
+	Dialog.create("Montage Choice");
 	Dialog.addMessage("How many grayscale panels?");
 	Dialog.addChoice("I'd like...", newArray("1","2","3","4"));
 	Dialog.addMessage("How many merge panels?");
@@ -119,10 +120,10 @@ function montageFrom16Bit(vChoice)	{
 		m1NameArray = newArray(3);
 		m2NameArray = newArray(3);
 	}
-	
+
 	// Next dialog
 	grout=8;
-	Dialog.create("Pick your panels"); 
+	Dialog.create("Pick your panels");
 	Dialog.addMessage("Select order for grayscale");
 	// variations based on number of files
 	if (gVar==1)	{
@@ -210,7 +211,7 @@ function montageFrom16Bit(vChoice)	{
 	mag = Dialog.getNumber();
 	// decisions collected
 	setBatchMode(true);
-	
+
 	// collect details from images
 	win = getTitle(); // could change this so that name is something more logical
 	win = replace(win,"c:","");
@@ -242,7 +243,7 @@ function montageFrom16Bit(vChoice)	{
 		}
 		else {
 			mergeString = "c1=[" + m2NameArray[0] + "] c2=[" + m2NameArray[1] + "] c3=[" + m2NameArray[2] + "] keep";
-			run("Merge Channels...", mergeString);  
+			run("Merge Channels...", mergeString);
 			rename("merge2");
 		}
 		selectImage(mImgArray[i]);
@@ -251,12 +252,12 @@ function montageFrom16Bit(vChoice)	{
 		makeRectangle(((width*gVar)+(grout*gVar-1))+((width*i)+(grout*i)), 0, width, height);
 		run("Paste");
 	}
-	
+
 	selectImage(newName);
 		// rotate right?
 	if (vChoice == "vert")
 		run("Rotate 90 Degrees Right");
-	
+
 	//add scale bar (height is same as grout)
 	if (sbchoice==true)	{
 		getDimensions(w, h, c, nFrames, dummy);
@@ -290,14 +291,14 @@ function compmtg(vChoice)	{
 		rowArray[i] = title;
 	}
 	len = imgArray.length;
-	
+
 	// Standard sizes
 	grout = 16;
 	res = 300;
 	sblen = 10;
 	mag = 0.069;
 	// Make dialog box
-	Dialog.create("Compile Montages"); 
+	Dialog.create("Compile Montages");
 	// variations based on number of files
 	if (vChoice == "vert")	{
 		Dialog.addMessage("Select order for your compilation, left to right");
@@ -326,12 +327,12 @@ function compmtg(vChoice)	{
 	mag = Dialog.getNumber();
 	// decisions collected
 	setBatchMode(true);
-	
+
 	// setup for save
 	win = getTitle();
 	dir1 = getDirectory("image");
 	newName = "cmp" + len + win;
-	
+
 	// get dimensions
 	wArray = newArray(len);
 	hArray = newArray(len);

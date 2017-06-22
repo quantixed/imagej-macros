@@ -1,5 +1,5 @@
-/* 
- * This macro picks an ROI and makes an expanded version in the corner 
+/*
+ * This macro picks an ROI and makes an expanded version in the corner
  * The ROI and the expansion have a white border
  * User can select the size of the ROI, the expansion, the corner and the border size
  * It is meant to be used for montages (made with MultiMotageMacro.ijm)
@@ -10,13 +10,16 @@
  */
 
 macro "Add ROI Zoom"	{
-	qFpath = getDirectory("plugins")+"quantixed/Figure Maker/qFunctions.txt"; 
-    functions = File.openAsString(qFpath); 
+  s=call("ij.macro.Interpreter.getAdditionalFunctions");
+  if(startsWith(s,"//qFunctions")!=1) {
+    qFpath = getDirectory("plugins")+"quantixed/Figure Maker/qFunctions.txt";
+    functions = File.openAsString(qFpath);
     call("ij.macro.Interpreter.setAdditionalFunctions", functions);
-    
+    delay(3000);
+  }
 	if (nImages > 1) exit ("Use a single image or single montage");
 	if (nImages == 0)	exit("No image open");
-		
+
 	imageID = getImageID();
 	title = getTitle();
 	dir1 = getDirectory("image");
@@ -44,7 +47,7 @@ macro "Add ROI Zoom"	{
   		defaults[i] = true;
   	}
 	// Make dialog box
-	Dialog.create("Specify ROI Zoom"); 
+	Dialog.create("Specify ROI Zoom");
 	Dialog.addMessage("Select corner for zoom");
 	Dialog.addChoice("Corner", cornerArray);
 	Dialog.addMessage("What size box for expansion?");
@@ -55,7 +58,7 @@ macro "Add ROI Zoom"	{
 	Dialog.addCheckboxGroup(1,nCol,labels,defaults);
 	// need to add something here so that the user can define where boxes go
 	Dialog.show();
-	
+
 	corner = Dialog.getChoice();
 	bSize = Dialog.getNumber();
 	expand = Dialog.getNumber();
@@ -88,20 +91,20 @@ macro "Add ROI Zoom"	{
 	sp = floor(xp / h);	// sp is the panel where selection is 0-based
 	// this is risky but box should not be less than grout away from panel edge
 	// will fail in cases of large grout or many panels.
-	
+
 	// x and y coords of ROI centre relative to the panel LT
 	xp1 = xp - (sp * (h + grout));
 	yp1 = yp - 0; // --for future dev
 	// sanity check in case user has clicked too close to the edge
 	if (xp1-(bSize/2) < 0 || yp1-(bSize/2) < 0)	exit("Try again, too close to the edge");
 	if (xp1+(bSize/2) > h || yp1+(bSize/2) > h)	exit("Try again, too close to the edge");
-	
+
 	setBatchMode(true);
 	// border will be white
 	setForegroundColor(255,255,255);
 	// T dStarty = 0; B dStarty = h - dSize
 	if (corner == "LB" || corner == "RB")	{
-		dStarty = h - dSize; // B	
+		dStarty = h - dSize; // B
 	}
 	else if (corner == "LT" || corner == "RT")	{
 		dStarty = 0; // T
@@ -129,13 +132,13 @@ macro "Add ROI Zoom"	{
 			selectWindow(title);
 			// L dStartx is left side of panel; R dStartX is right side of panel - dSize
 			if (corner == "LB" || corner == "LT")	{
-				dStartx = (i * (h + grout)); // L	
+				dStartx = (i * (h + grout)); // L
 			}
 			else if (corner == "RB" || corner == "RT")	{
 				dStartx = h + (i * (h + grout)) - dSize; // R
 			}
 			// dStarty calculated outside the loop
-	
+
 			// make border for zoom
 			if (corner == "LB")	{
 				makeRectangle(dStartx,dStarty-bStroke,dSize+bStroke,dSize+bStroke);
@@ -153,11 +156,10 @@ macro "Add ROI Zoom"	{
 			// now paste zoom
 			makeRectangle(dStartx,dStarty,dSize,dSize);
 			run("Paste");
-		}	
-	}	
+		}
+	}
 	selectWindow(title);
 	run("Select None");
 	saveAs("TIFF", dir1+newName);
 	setBatchMode(false);
 }
-
