@@ -24,7 +24,7 @@ macro "Montage Horizontal RGB" {
     qFpath = getDirectory("plugins")+"quantixed/Figure Maker/qFunctions.txt";
     functions = File.openAsString(qFpath);
     call("ij.macro.Interpreter.setAdditionalFunctions", functions);
-    delay(3000);
+    wait(3000);
   }
 	if (nImages > 0) exit ("Please close all open images");
 	filepath=File.openDialog("Select a File");
