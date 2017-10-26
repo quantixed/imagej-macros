@@ -41,7 +41,7 @@ macro "Make Version For ELN" {
 	saveAs("png",dir2+newName);
 	close();
 	// record what happened
-	print("\\Clear")
+	print("\\Clear");
 	print(title1 + " from " + dir1 + "\rexported as " + TimeString);
 	selectWindow("Log");
 	saveAs("text", dir2+newName+"_note.txt");
