@@ -1,4 +1,4 @@
-/* 
+/*
  *  BlindAnalysis.ijm
  *  This macro will take a directory of TIFFs
  *  	strip the label from them
@@ -10,10 +10,10 @@
 
 macro "Blind Analysis" {
 	DIR_PATH=getDirectory("Select a directory");
-	
+
 print("\\Clear");
 print("DIR_PATH :"+DIR_PATH);
-	
+
 	// Get all file names
 	ALL_NAMES=getFileList(DIR_PATH);
 
@@ -22,24 +22,24 @@ print("DIR_PATH :"+DIR_PATH);
 	File.makeDirectory(OUTPUT_DIR);
 
 	// How many TIFFs do we have? Directory could contain other directories.
-	for (i=0; i<ALL_NAMES.length; i++) {		
- 		if (indexOf(toLowerCase(ALL_NAMES[i]), ".tif")>0) {	
- 			IM_NUMBER=IM_NUMBER+1;		
+	for (i=0; i<ALL_NAMES.length; i++) {
+ 		if (indexOf(toLowerCase(ALL_NAMES[i]), ".tif")>0) {
+ 			IM_NUMBER=IM_NUMBER+1;
  		}
  	}
 	IM_NAMES=newArray(IM_NUMBER);
 	IM_EXT=newArray(IM_NUMBER);
-	
+
 	// Test all files for extension
 	j=0;
 	for (i=0; i<ALL_NAMES.length; i++) {
-		if (indexOf(toLowerCase(ALL_NAMES[i]), ".tif")>0) {	
+		if (indexOf(toLowerCase(ALL_NAMES[i]), ".tif")>0) {
 			IM_NAMES[j]=ALL_NAMES[i];
 			j=j+1;
 		}
 	}
 
-	// Generate a permutation array of length IM_NUMBER	
+	// Generate a permutation array of length IM_NUMBER
 	IM_PERM=newArray(IM_NUMBER);
 	for(j=0; j<IM_NUMBER; j++) {
 		IM_PERM[j]=j+1;
@@ -68,12 +68,43 @@ print("DIR_PATH :"+DIR_PATH);
 		OUTPUT_PATH=OUTPUT_DIR+IM_NAMES[j];
 		OUTPUT_PATH_PERM=OUTPUT_DIR+IM_PERM_NAMES[j];
 		open(INPUT_PATH);
-		setMetadata("Label", ""); // strips the label data from the image for blinding purposes
+		getDimensions(ww, hh, cc, ss, ff);
+		if(ss > 1 || ff > 1)  {
+				stripFrameByFrame(cc,ss,ff);
+		} else  {
+				setMetadata("Label", ""); // strips the label data from the image for blinding purposes
+		}
 		save(OUTPUT_PATH_PERM);
 		print(f,IM_NAMES[j]+"\t"+IM_PERM_NAMES[j]);
 		close();
 	}
 	setBatchMode("exit and display");
 	showStatus("finished");
-	
+}
+
+function stripFrameByFrame(cc,ss,ff)  {
+  if(Stack.isHyperstack) {
+  for(i = 0; i < ss; i++){
+    Stack.setSlice(i+1);
+    for(j = 0; j < ff; j++) {
+      Stack.setFrame(j+1);
+      for(k = 0; k < cc; k++) {
+        Stack.setChannel(k+1);
+        setMetadata("Label", "");
+      }
+    }
+  }
+  } else if(cc > 1 && ss == 1 && ff == 1)  {
+      setMetadata("Label", "");
+  } else if(cc == 1 && ss > 1)  {
+      for(i = 0; i < ss; i++){
+        setSlice(i+1);
+        setMetadata("Label", "");
+      }
+  } else if(cc == 1 && ff > 1)  {
+      for(i = 0; i < ff; i++){
+        setSlice(i+1);
+        setMetadata("Label", "");
+      }
+  }
 }
