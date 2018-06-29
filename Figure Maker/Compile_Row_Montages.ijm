@@ -10,9 +10,16 @@ macro "Compile Row Montages"	{
   if(startsWith(s,"//qFunctions")!=1) {
     qFpath = getDirectory("plugins")+"quantixed/Figure Maker/qFunctions.txt";
     functions = File.openAsString(qFpath);
-    call("ij.macro.Interpreter.setAdditionalFunctions", functions);
-    wait(3000);
-  }
+    // this opens too quickly on first attempt, so we receive a string from call
+		success = call("ij.macro.Interpreter.setAdditionalFunctions", functions);
+		// and test for it
+		while(success==-1) {
+			print("Waiting");
+		}
+		if(success==0)  {
+		//	print("success");
+		}
+	}
 	if (nImages < 2) exit ("2 or more images are required");
 	compmtg("");
 }

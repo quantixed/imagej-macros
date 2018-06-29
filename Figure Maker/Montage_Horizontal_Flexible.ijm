@@ -23,9 +23,16 @@ macro "Montage Horizontal Flexible" {
   if(startsWith(s,"//qFunctions")!=1) {
     qFpath = getDirectory("plugins")+"quantixed/Figure Maker/qFunctions.txt";
     functions = File.openAsString(qFpath);
-    call("ij.macro.Interpreter.setAdditionalFunctions", functions);
-    wait(3000);
-  }
+    // this opens too quickly on first attempt, so we receive a string from call
+		success = call("ij.macro.Interpreter.setAdditionalFunctions", functions);
+		// and test for it
+		while(success==-1) {
+			print("Waiting");
+		}
+		if(success==0)  {
+		//	print("success");
+		}
+	}
 	if (nImages > 0) exit ("Please close all open images");
 	filepath=File.openDialog("Select a File");
 	open(filepath);
