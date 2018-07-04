@@ -21,7 +21,7 @@ macro "Add ROI Zoom"	{
 			print("Waiting");
 		}
 		if(success==0)  {
-		//	print("success");
+			wait(1000);
 		}
 	}
 	if (nImages > 1) exit ("Use a single image or single montage");

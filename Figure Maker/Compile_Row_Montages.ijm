@@ -17,7 +17,7 @@ macro "Compile Row Montages"	{
 			print("Waiting");
 		}
 		if(success==0)  {
-		//	print("success");
+			wait(1000);
 		}
 	}
 	if (nImages < 2) exit ("2 or more images are required");
