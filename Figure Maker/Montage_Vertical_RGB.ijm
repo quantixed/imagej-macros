@@ -25,7 +25,7 @@ macro "Montage Vertical RGB" {
     // this opens too quickly on first attempt, so we receive a string from call
 		success = call("ij.macro.Interpreter.setAdditionalFunctions", functions);
 		// and test for it
-		while(success==-1) {
+		while(success!=0) {
 			print("Waiting");
 		}
 		if(success==0)  {
