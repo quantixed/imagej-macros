@@ -53,7 +53,7 @@ function rgb2Montage(vChoice)	{
 	str2=replace(str1,"G","2");
 	str3=replace(str2,"B","3");
 	str4=replace(str3,"M","4");
-	//
+	// 
 	for (i=0; i<len; i++)   {
 		ch=substring(str4, i, i+1);
 		selectImage("stk");
