@@ -7,8 +7,9 @@
 
 macro "Compile Column Montages"	{
 	s=call("ij.macro.Interpreter.getAdditionalFunctions");
-	while(startsWith(s,"//qFunctions")!=1) {
-		qFpath = getDirectory("plugins")+"quantixed/Figure Maker/qFunctions.txt";
+  if(startsWith(s,"//qFunctions")!=1) {
+		qFpath = getDirectory("plugins")+"LabCode/Figure Maker/qFunctions.txt";
+		qFpath = replace(qFpath,"plugins","scripts");
 		functions = File.openAsString(qFpath);
 		call("ij.macro.Interpreter.setAdditionalFunctions", functions);
 		}
