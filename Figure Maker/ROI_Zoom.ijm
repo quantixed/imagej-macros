@@ -12,7 +12,7 @@
 macro "Add ROI Zoom"	{
 	s=call("ij.macro.Interpreter.getAdditionalFunctions");
 	if(startsWith(s,"//qFunctions")!=1) {
-		qFpath = getDirectory("plugins")+"Figure Maker/qFunctions.txt";
+		qFpath = getDirectory("plugins")+"/quantixed/Figure Maker/qFunctions.txt";
 		functions = File.openAsString(qFpath);
 		call("ij.macro.Interpreter.setAdditionalFunctions", functions);
 		}
