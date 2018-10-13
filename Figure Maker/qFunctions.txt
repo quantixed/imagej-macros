@@ -53,7 +53,7 @@ function rgb2Montage(vChoice)	{
 	str2=replace(str1,"G","2");
 	str3=replace(str2,"B","3");
 	str4=replace(str3,"M","4");
-	// 
+	//
 	for (i=0; i<len; i++)   {
 		ch=substring(str4, i, i+1);
 		selectImage("stk");
@@ -80,9 +80,6 @@ function rgb2Montage(vChoice)	{
 }
 
 function montageFrom16Bit(vChoice)	{
-	// rotate left?
-	if (vChoice == "vert")
-		run("Rotate 90 Degrees Left");
 	dir1 = getDirectory("image");
 	// check how many slices/channels
 	Stack.getDimensions(width, height, channels, slices, frames);
@@ -99,6 +96,9 @@ function montageFrom16Bit(vChoice)	{
 		title = getTitle();
 		colArray[i] = title;
 		mArray[i+1] = title;
+		// rotate left?
+		if (vChoice == "vert")
+			run("Rotate 90 Degrees Left");
 	}
 	// give the option of making up to 2 merges
 	Dialog.create("Montage Choice");
