@@ -44,9 +44,9 @@ macro "Blind Analysis" {
 		inputPath = dirPath+imNames[i];
 		outputPathPerm = outputDir+imPermNames[i];
 		open(inputPath);
-		totalSlices = nSlices;
-		if(totalSlices > 1)  {
-				stripFrameByFrame(totalSlices);
+		getDimensions(ww, hh, cc, ss, ff); // reverted to this method. Although clumsy it deals with all cases.
+		if(cc > 1 || ss > 1 || ff > 1)  {
+				stripFrameByFrame(cc,ss,ff);
 		} else  {
 				setMetadata("Label", ""); // strips the label data from the image for blinding purposes
 		}
@@ -58,12 +58,35 @@ macro "Blind Analysis" {
 	showStatus("finished");
 }
 
-// strips the label data from each slice of an image
-function stripFrameByFrame(totalSlices)  {
-  for(i = 0; i < totalSlices; i ++){
-    setSlice(i+1);
-	setMetadata("Label", "");
+function stripFrameByFrame(cc,ss,ff)  {
+  if(Stack.isHyperstack) {
+  for(i = 0; i < ss; i++){
+    Stack.setSlice(i+1);
+    for(j = 0; j < ff; j++) {
+      Stack.setFrame(j+1);
+      for(k = 0; k < cc; k++) {
+        Stack.setChannel(k+1);
+        setMetadata("Label", "");
+      }
     }
+  }
+  } else if(cc > 1 && ss == 1 && ff == 1)  {
+      setMetadata("Label", "");
+      for(i = 0; i < cc; i++){
+        setSlice(i+1);
+        setMetadata("Label", "");
+      }
+  } else if(cc == 1 && ss > 1)  {
+      for(i = 0; i < ss; i++){
+        setSlice(i+1);
+        setMetadata("Label", "");
+      }
+  } else if(cc == 1 && ff > 1)  {
+      for(i = 0; i < ff; i++){
+        setSlice(i+1);
+        setMetadata("Label", "");
+      }
+  }
 }
 
 // function that adds a variable to an array
