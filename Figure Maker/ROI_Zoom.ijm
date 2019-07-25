@@ -23,13 +23,21 @@ macro "Add ROI Zoom"	{
 	dir1 = getDirectory("image");
 	newName = "zooms_" + title;
 	run("Select None");
-	getDimensions(w, h, c, nFrames, dummy);
+	getDimensions(w, h, c, numSlices, nFrames);
+	// deal with multiple frames or slices
+	nShots = maxOf(numSlices,nFrames);
+	if (numSlices > 1 && nFrames > 1) exit("Number of slices and frames is greater than one");
+	if (numSlices == 1) sliceOrFrame = 0;
+	if (numSlices > 1) sliceOrFrame = 1;
+	if (nFrames > 1) sliceOrFrame = 2;
 
 	// work out grout size
 	if (w == h) {
 		nCol = 1;
 		nRow = 1;
 		grout = 0;
+		nPanel = 1;
+		vChoice = "";
 	}
 	else if (w > h)	{
 		nCol = floor(w/h);
@@ -61,7 +69,9 @@ macro "Add ROI Zoom"	{
 	Dialog.addMessage("What size box for expansion?");
 	Dialog.addNumber("Box size (px)", 50);
 	Dialog.addNumber("Expansion e.g. 2X", 2);
-	Dialog.addNumber("Border for boxes (px)", 2);
+	// setting border to 4 px because 1 pt is 1/72 inch
+	// at 300 ppi, this would be 300/72 = 4.167 px
+	Dialog.addNumber("Border for boxes (px)", 4);
 	Dialog.addMessage("Make boxes and zooms in panels...");
 	Dialog.addCheckboxGroup(1,nPanel,labels,defaults);
 	// need to add something here so that the user can define where boxes go
@@ -83,7 +93,7 @@ macro "Add ROI Zoom"	{
 	if ((dSize == h && bStroke > grout) && lengthOf(vChoice) == 0)	exit("Use different stroke size to do this");
 	if ((dSize == w && bStroke > grout) && vChoice == "vert")	exit("Use different stroke size to do this");
 	// entered a silly number
-	if (bStroke > 20 * grout)	exit("Use a smaller stroke size");
+	if (bStroke > 20 * grout && grout > 0)	exit("Use a smaller stroke size");
 
 	// User defines the centre of the box for expansion
 	setTool(7); // not sure how to force single point vs multi-point
@@ -123,7 +133,9 @@ macro "Add ROI Zoom"	{
 
 	setBatchMode(true);
 	// border will be white
-	setForegroundColor(255,255,255);
+	if (bitDepth() == 8) setColor(255);
+	if (bitDepth() == 24) setColor(255,255,255);
+	if (bitDepth() == 16) setColor(65535);
 
 	if (vChoice == "vert") {
 		if (corner == "RT" || corner == "RB")	{
@@ -138,47 +150,51 @@ macro "Add ROI Zoom"	{
 				run("Select None");
 				xq = xp1 + 0; // --for future dev
 				yq = yp1 + (i * (w + grout));
-				makeRectangle(xq-(bSize/2),yq-(bSize/2),bSize,bSize);
-				run("Copy");
-				// make border
-				makeRectangle(xq-((bSize + bStroke)/2),yq-((bSize + bStroke)/2),bSize+bStroke,bSize+bStroke);
-				run("Fill");
-				makeRectangle(xq-(bSize/2),yq-(bSize/2),bSize,bSize);
-				run("Paste");
-				run("Internal Clipboard");
-				selectWindow("Clipboard");
-				cmd = "width="+dSize+" height="+dSize+" constrain average interpolation=Bilinear";
-				run("Size...", cmd);
-				run("Select All");
-				run("Copy");
-				close("Clipboard");
-				selectWindow(title);
-				// T dStarty is top side of panel; B dStarty is bottom side of panel - dSize
-				if (corner == "LT" || corner == "RT")	{
-					dStarty = (i * (w + grout));
+				for (j=0; j<nShots; j++)	{
+					if (sliceOrFrame == 1)
+						Stack.setSlice(j+1);
+					else if (sliceOrFrame == 2)
+						Stack.setFrame(j+1);
+					makeRectangle(xq-(bSize/2),yq-(bSize/2),bSize,bSize);
+					run("Copy");
+					// make border
+					fillRect(xq-((bSize + bStroke)/2),yq-((bSize + bStroke)/2),bSize+bStroke,bSize+bStroke);
+					makeRectangle(xq-(bSize/2),yq-(bSize/2),bSize,bSize);
+					run("Paste");
+					run("Internal Clipboard");
+					selectWindow("Clipboard");
+					cmd = "width="+dSize+" height="+dSize+" constrain average interpolation=Bilinear";
+					run("Size...", cmd);
+					run("Select All");
+					run("Copy");
+					close("Clipboard");
+					selectWindow(title);
+					// T dStarty is top side of panel; B dStarty is bottom side of panel - dSize
+					if (corner == "LT" || corner == "RT")	{
+						dStarty = (i * (w + grout));
+					}
+					else if (corner == "LB" || corner == "RB")	{
+						dStarty = w + (i * (w + grout)) - dSize;
+					}
+					// dStartx calculated outside the loop
+	
+					// make border for zoom
+					if (corner == "LB")	{
+						fillRect(dStartx,dStarty-bStroke,dSize+bStroke,dSize+bStroke);
+					}
+					else if (corner == "LT")	{
+						fillRect(dStartx,dStarty,dSize+bStroke,dSize+bStroke);
+					}
+					else if (corner == "RB")	{
+						fillRect(dStartx-bStroke,dStarty-bStroke,dSize+bStroke,dSize+bStroke);
+					}
+					else if (corner == "RT")	{
+						fillRect(dStartx-bStroke,dStarty,dSize+bStroke,dSize+bStroke);
+					}
+					// now paste zoom
+					makeRectangle(dStartx,dStarty,dSize,dSize);
+					run("Paste");
 				}
-				else if (corner == "LB" || corner == "RB")	{
-					dStarty = w + (i * (w + grout)) - dSize;
-				}
-				// dStartx calculated outside the loop
-
-				// make border for zoom
-				if (corner == "LB")	{
-					makeRectangle(dStartx,dStarty-bStroke,dSize+bStroke,dSize+bStroke);
-				}
-				else if (corner == "LT")	{
-					makeRectangle(dStartx,dStarty,dSize+bStroke,dSize+bStroke);
-				}
-				else if (corner == "RB")	{
-					makeRectangle(dStartx-bStroke,dStarty-bStroke,dSize+bStroke,dSize+bStroke);
-				}
-				else if (corner == "RT")	{
-					makeRectangle(dStartx-bStroke,dStarty,dSize+bStroke,dSize+bStroke);
-				}
-				run("Fill");
-				// now paste zoom
-				makeRectangle(dStartx,dStarty,dSize,dSize);
-				run("Paste");
 			}
 		}
 	}
@@ -195,47 +211,51 @@ macro "Add ROI Zoom"	{
 				run("Select None");
 				xq = xp1 + (i * (h + grout));
 				yq = yp1 + 0; // --for future dev
-				makeRectangle(xq-(bSize/2),yq-(bSize/2),bSize,bSize);
-				run("Copy");
-				// make border
-				makeRectangle(xq-((bSize + bStroke)/2),yq-((bSize + bStroke)/2),bSize+bStroke,bSize+bStroke);
-				run("Fill");
-				makeRectangle(xq-(bSize/2),yq-(bSize/2),bSize,bSize);
-				run("Paste");
-				run("Internal Clipboard");
-				selectWindow("Clipboard");
-				cmd = "width="+dSize+" height="+dSize+" constrain average interpolation=Bilinear";
-				run("Size...", cmd);
-				run("Select All");
-				run("Copy");
-				close("Clipboard");
-				selectWindow(title);
-				// L dStartx is left side of panel; R dStartX is right side of panel - dSize
-				if (corner == "LB" || corner == "LT")	{
-					dStartx = (i * (h + grout)); // L
+				for (j=0; j<nShots; j++)	{
+					if (sliceOrFrame == 1)
+						Stack.setSlice(j+1);
+					else if (sliceOrFrame == 2)
+						Stack.setFrame(j+1);
+					makeRectangle(xq-(bSize/2),yq-(bSize/2),bSize,bSize);
+					run("Copy");
+					// make border
+					fillRect(xq-((bSize + bStroke)/2),yq-((bSize + bStroke)/2),bSize+bStroke,bSize+bStroke);
+					makeRectangle(xq-(bSize/2),yq-(bSize/2),bSize,bSize);
+					run("Paste");
+					run("Internal Clipboard");
+					selectWindow("Clipboard");
+					cmd = "width="+dSize+" height="+dSize+" constrain average interpolation=Bilinear";
+					run("Size...", cmd);
+					run("Select All");
+					run("Copy");
+					close("Clipboard");
+					selectWindow(title);
+					// L dStartx is left side of panel; R dStartX is right side of panel - dSize
+					if (corner == "LB" || corner == "LT")	{
+						dStartx = (i * (h + grout)); // L
+					}
+					else if (corner == "RB" || corner == "RT")	{
+						dStartx = h + (i * (h + grout)) - dSize; // R
+					}
+					// dStarty calculated outside the loop
+	
+					// make border for zoom
+					if (corner == "LB")	{
+						fillRect(dStartx,dStarty-bStroke,dSize+bStroke,dSize+bStroke);
+					}
+					else if (corner == "LT")	{
+						fillRect(dStartx,dStarty,dSize+bStroke,dSize+bStroke);
+					}
+					else if (corner == "RB")	{
+						fillRect(dStartx-bStroke,dStarty-bStroke,dSize+bStroke,dSize+bStroke);
+					}
+					else if (corner == "RT")	{
+						fillRect(dStartx-bStroke,dStarty,dSize+bStroke,dSize+bStroke);
+					}
+					// now paste zoom
+					makeRectangle(dStartx,dStarty,dSize,dSize);
+					run("Paste");
 				}
-				else if (corner == "RB" || corner == "RT")	{
-					dStartx = h + (i * (h + grout)) - dSize; // R
-				}
-				// dStarty calculated outside the loop
-
-				// make border for zoom
-				if (corner == "LB")	{
-					makeRectangle(dStartx,dStarty-bStroke,dSize+bStroke,dSize+bStroke);
-				}
-				else if (corner == "LT")	{
-					makeRectangle(dStartx,dStarty,dSize+bStroke,dSize+bStroke);
-				}
-				else if (corner == "RB")	{
-					makeRectangle(dStartx-bStroke,dStarty-bStroke,dSize+bStroke,dSize+bStroke);
-				}
-				else if (corner == "RT")	{
-					makeRectangle(dStartx-bStroke,dStarty,dSize+bStroke,dSize+bStroke);
-				}
-				run("Fill");
-				// now paste zoom
-				makeRectangle(dStartx,dStarty,dSize,dSize);
-				run("Paste");
 			}
 		}
 	}
