@@ -3,6 +3,8 @@ Some simple macros for Fiji/ImageJ that we are using in the lab. These tools are
 
 If you want to install manually, add the contents of `macros` and `scripts` to the corresponding directories in your Fiji/ImageJ installation.
 
+After installation, all macros can be found under the menu item called **Lab Code**.
+
 ## Quick links
 
 1. [Figure Maker](#figure-maker)
@@ -91,7 +93,7 @@ This is fine. Just select *Lab Code>Figure Maker>Montage Vertical Flexible* This
 
 Remember that when you compile vertical montages, you need to select *Lab Code>Figure Maker>Compile Column Montages*
 
-**All results are saved as 300 ppi TIFF.**
+Note that **results from Figure Maker are saved as 300 ppi TIFF** ready for use in Illustrator or equivalent software.
 
 #### Figures the quantixed way
 
@@ -112,13 +114,12 @@ For multichannel microscopy images, e.g. from an immunofluorescence experiment, 
 
 `BlindAnalysis.ijm` Takes a directory of TIFFs, strips the label from them and saves them with a blinded name. A tsv called `log.txt` is created to log the association between the original file and the blinded copy. Works on TIFF only.
 
-`RemoveLabels.ijm` Takes a directory of TIFFs and removes the label from the file for blinding. Use another method for changing filenames.
-
 
 ### ELN Saver
 
 This is a simple utility to save a version of the file you are viewing in Fiji/ImageJ to put in your electronic lab notebook. A png version or low-res movie of the file you are looking at is saved to the Desktop with a unique name. A text file is saved to explain the filenames. 
 
+--
 
 ### Other utilities
 
@@ -130,6 +131,7 @@ Open all the nd2 files in a directory and save them as TIFF to another directory
 
 Maybe you like to open a whole directory of images, look through them, closing the bad ones and leaving the good ones open. Perhaps you want to grab the list of good images so that you can come back to it later? Well, `PrintTitlesOfNiceImages.ijm` does this for you.
 
+--
 
 ### Misc Macros
 
