@@ -3,7 +3,7 @@ Some simple macros for Fiji/ImageJ that we are using in the lab. These tools are
 
 If you want to install manually, add the contents of `macros` and `scripts` to the corresponding directories in your Fiji/ImageJ installation.
 
-After installation, all macros can be found under the menu item called **Lab Code**.
+After installation, all macros can be found under the menu item called **LabCode**.
 
 ## Quick links
 
@@ -39,7 +39,7 @@ Crop your images and save them as TIFFs.
 
 #### Make a montage row
 
-To make a nicely spaced montage (row of images). Select *Lab Code>Figure Maker>Montage Horizontal Flexible*
+To make a nicely spaced montage (row of images). Select *LabCode>Figure Maker>Montage Horizontal Flexible*
 
 Note that there are other options here: to make a simple RGB montage (this is good for three channel images were you just want one merge panel, this also works on whole directories), there are [vertical montage](#i-want-columns-not-rows) options for flexible and RGB montages.
 
@@ -62,7 +62,7 @@ Your montage is saved in the same directory as the original image. The macro lea
 
 #### Optional: add ROIs and zooms
 
-Sometimes, we like to add a ROI and a zoomed version of this ROI to various panels in the montage. To do this open your montage and select *Lab Code>Figure Maker>ROI Zoom*
+Sometimes, we like to add a ROI and a zoomed version of this ROI to various panels in the montage. To do this open your montage and select *LabCode>Figure Maker>ROI Zoom*
 
 ![fm014](img/screenshot14.jpg)
 
@@ -76,7 +76,7 @@ Note that this code will run on stacks as well so that you can add ROIs and zoom
 
 #### Now put the rows together
 
-Finally, if we have more than one montage, we need to compile them together. Load in all the montages you'd like to compile. Now select *Lab Code>Figure Maker>Compile Row Montages*
+Finally, if we have more than one montage, we need to compile them together. Load in all the montages you'd like to compile. Now select *LabCode>Figure Maker>Compile Row Montages*
 
 The dialog asks you to select which montage you'd like where.
 
@@ -89,9 +89,9 @@ Your compilation will save back in the same directory as the montages. Note, tha
 
 #### I want columns not rows
 
-This is fine. Just select *Lab Code>Figure Maker>Montage Vertical Flexible* This will do the same thing but put the channels vertically with any merges at the bottom. Note that there is a version to make simple RGB montages. There is a vertical version of this too.
+This is fine. Just select *LabCode>Figure Maker>Montage Vertical Flexible* This will do the same thing but put the channels vertically with any merges at the bottom. Note that there is a version to make simple RGB montages. There is a vertical version of this too.
 
-Remember that when you compile vertical montages, you need to select *Lab Code>Figure Maker>Compile Column Montages*
+Remember that when you compile vertical montages, you need to select *LabCode>Figure Maker>Compile Column Montages*
 
 Note that **results from Figure Maker are saved as 300 ppi TIFF** ready for use in Illustrator or equivalent software.
 
