@@ -6,12 +6,6 @@
  */
 
 macro "Compile Column Montages"	{
-	s=call("ij.macro.Interpreter.getAdditionalFunctions");
-	if(startsWith(s,"//qFunctions")!=1) {
-		qFpath = getDirectory("plugins")+"/quantixed/Figure Maker/qFunctions.txt";
-		functions = File.openAsString(qFpath);
-		call("ij.macro.Interpreter.setAdditionalFunctions", functions);
-		}
 	if (nImages < 2) exit ("2 or more images are required");
 	compmtg("vert");
 }

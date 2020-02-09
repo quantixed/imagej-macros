@@ -83,6 +83,7 @@ function montageFrom16Bit(vChoice)	{
 	dir1 = getDirectory("image");
 	// check how many slices/channels
 	Stack.getDimensions(width, height, channels, slices, frames);
+	getPixelSize(unit, pixelWidth, pixelHeight);
 	if (channels * slices * frames == 1) exit ("Need more than one channel or slice or frame");
 	run("Stack to Images");
 	numImages = nImages;
@@ -206,7 +207,7 @@ function montageFrom16Bit(vChoice)	{
 	Dialog.addNumber("d.p.i.", 300);
 	Dialog.addCheckbox("Scale bar?", false);
 	Dialog.addNumber("Scale bar size (µm):", 10);
-	Dialog.addNumber("1 px is how many µm?", 0.069);
+	Dialog.addNumber("1 px is how many µm?", pixelWidth);
 	Dialog.show();
 	// variations based on channels
 	if (gVar==1)	{
@@ -361,6 +362,297 @@ function montageFrom16Bit(vChoice)	{
 	}
 }
 
+function montageMaker()	{
+	dir1 = getDirectory("image");
+	// check how many slices/channels
+	Stack.getDimensions(width, height, channels, slices, frames);
+	getPixelSize(unit, pixelWidth, pixelHeight);
+// checks now happen before this is called
+//	if (channels * slices * frames == 1) exit ("Need more than one channel or slice or frame");
+	run("Stack to Images");
+	numImages = nImages;
+	imgArray = newArray(numImages);
+	colArray = newArray(numImages);
+	mArray = newArray(numImages + 1);
+	mArray[0] = "*None*";
+	grayChoiceArray = newArray(numImages);
+	for (i=0; i<numImages; i++)	{
+		selectImage(i+1);
+		run("Grays");
+		imgArray[i] = getImageID();
+		title = getTitle();
+		colArray[i] = title;
+		mArray[i+1] = title;
+		grayChoiceArray[i] = d2s(i+1,0);
+	}
+	// give the option of making up to 2 merges
+	Dialog.create("Montage Choice");
+	Dialog.addMessage("How many grayscale panels?");
+	Dialog.addChoice("I'd like...", grayChoiceArray);
+	Dialog.addMessage("How many merge panels?");
+	Dialog.addChoice("I'd like...", newArray("0","1","2"));
+	Dialog.addCheckbox("Vertical montage?", false);
+	Dialog.show();
+	gPanels = Dialog.getChoice();
+	mPanels = Dialog.getChoice();
+	vChoice = Dialog.getCheckbox();
+	// if vertical montage, rotate all images left
+	if (vChoice == true) {
+		for (i = 0; i < numImages; i ++)	{
+			selectImage(i+1);
+			run("Rotate 90 Degrees Left");
+		}
+	}
+	// Image choices
+	gVar = parseInt(gPanels);
+	mVar = parseInt(mPanels);
+	// Make arrays to hold image choices
+	gNameArray = newArray(gVar);
+	if (mVar == 1) {
+		m1NameArray = newArray(7);
+	}
+	else if (mVar == 2) {
+		m1NameArray = newArray(7);
+		m2NameArray = newArray(7);
+	}
+
+	// Next dialog
+	grout=8;
+	Dialog.create("Pick your panels");
+	Dialog.addMessage("Select order for grayscale");
+	// variations based on number of files
+	if (gVar==1)	{
+		Dialog.addChoice("Gray Panel 1", colArray);
+	}
+	else if (gVar==2)	{
+		Dialog.addChoice("Gray Panel 1", colArray);
+		Dialog.addChoice("Gray Panel 2", colArray);
+	}
+	else if (gVar==3)	{
+		Dialog.addChoice("Gray Panel 1", colArray);
+		Dialog.addChoice("Gray Panel 2", colArray);
+		Dialog.addChoice("Gray Panel 3", colArray);
+	}
+	else if (gVar==4)	{
+		Dialog.addChoice("Gray Panel 1", colArray);
+		Dialog.addChoice("Gray Panel 2", colArray);
+		Dialog.addChoice("Gray Panel 3", colArray);
+		Dialog.addChoice("Gray Panel 4", colArray);
+	}
+	else if (gVar==5)	{
+		Dialog.addChoice("Gray Panel 1", colArray);
+		Dialog.addChoice("Gray Panel 2", colArray);
+		Dialog.addChoice("Gray Panel 3", colArray);
+		Dialog.addChoice("Gray Panel 4", colArray);
+		Dialog.addChoice("Gray Panel 5", colArray);
+	}
+	else if (gVar==6)	{
+		Dialog.addChoice("Gray Panel 1", colArray);
+		Dialog.addChoice("Gray Panel 2", colArray);
+		Dialog.addChoice("Gray Panel 3", colArray);
+		Dialog.addChoice("Gray Panel 4", colArray);
+		Dialog.addChoice("Gray Panel 5", colArray);
+		Dialog.addChoice("Gray Panel 6", colArray);
+	}
+	else if (gVar==7)	{
+		Dialog.addChoice("Gray Panel 1", colArray);
+		Dialog.addChoice("Gray Panel 2", colArray);
+		Dialog.addChoice("Gray Panel 3", colArray);
+		Dialog.addChoice("Gray Panel 4", colArray);
+		Dialog.addChoice("Gray Panel 5", colArray);
+		Dialog.addChoice("Gray Panel 6", colArray);
+		Dialog.addChoice("Gray Panel 7", colArray);
+	}
+	// variations based on merges
+	if (mVar==0)	{
+	}
+	else if (mVar==1)	{
+		Dialog.addMessage("Select channels for merge");
+		Dialog.addChoice("Red", mArray);
+		Dialog.addChoice("Green", mArray);
+		Dialog.addChoice("Blue", mArray);
+		Dialog.addChoice("Gray", mArray);
+		Dialog.addChoice("Cyan", mArray);
+		Dialog.addChoice("Magenta", mArray);
+		Dialog.addChoice("Yellow", mArray);
+	}
+	else if (mVar==2)	{
+		Dialog.addMessage("Select channels for 1st merge");
+		Dialog.addChoice("Red", mArray);
+		Dialog.addChoice("Green", mArray);
+		Dialog.addChoice("Blue", mArray);
+		Dialog.addChoice("Gray", mArray);
+		Dialog.addChoice("Cyan", mArray);
+		Dialog.addChoice("Magenta", mArray);
+		Dialog.addChoice("Yellow", mArray);
+		Dialog.addMessage("Select channels for 2nd merge");
+		Dialog.addChoice("Red", mArray);
+		Dialog.addChoice("Green", mArray);
+		Dialog.addChoice("Blue", mArray);
+		Dialog.addChoice("Gray", mArray);
+		Dialog.addChoice("Cyan", mArray);
+		Dialog.addChoice("Magenta", mArray);
+		Dialog.addChoice("Yellow", mArray);
+	}
+	Dialog.addNumber("Grout size (pixels):", 8);
+	Dialog.addNumber("d.p.i.", 300);
+	Dialog.addCheckbox("Scale bar?", false);
+	Dialog.addNumber("Scale bar size (µm):", 10);
+	Dialog.addNumber("1 px is how many µm?", pixelWidth);
+	Dialog.show();
+	// variations based on channels
+	if (gVar==1)	{
+		gNameArray[0] = Dialog.getChoice();
+	}
+	else if (gVar==2)	{
+		gNameArray[0] = Dialog.getChoice();
+		gNameArray[1] = Dialog.getChoice();
+	}
+	else if (gVar==3)	{
+		gNameArray[0] = Dialog.getChoice();
+		gNameArray[1] = Dialog.getChoice();
+		gNameArray[2] = Dialog.getChoice();
+	}
+	else if (gVar==4)	{
+		gNameArray[0] = Dialog.getChoice();
+		gNameArray[1] = Dialog.getChoice();
+		gNameArray[2] = Dialog.getChoice();
+		gNameArray[3] = Dialog.getChoice();
+	}
+	else if (gVar==5)	{
+		gNameArray[0] = Dialog.getChoice();
+		gNameArray[1] = Dialog.getChoice();
+		gNameArray[2] = Dialog.getChoice();
+		gNameArray[3] = Dialog.getChoice();
+		gNameArray[4] = Dialog.getChoice();
+	}
+	else if (gVar==6)	{
+		gNameArray[0] = Dialog.getChoice();
+		gNameArray[1] = Dialog.getChoice();
+		gNameArray[2] = Dialog.getChoice();
+		gNameArray[3] = Dialog.getChoice();
+		gNameArray[4] = Dialog.getChoice();
+		gNameArray[5] = Dialog.getChoice();
+	}
+	else if (gVar==7)	{
+		gNameArray[0] = Dialog.getChoice();
+		gNameArray[1] = Dialog.getChoice();
+		gNameArray[2] = Dialog.getChoice();
+		gNameArray[3] = Dialog.getChoice();
+		gNameArray[4] = Dialog.getChoice();
+		gNameArray[5] = Dialog.getChoice();
+		gNameArray[6] = Dialog.getChoice();
+	}
+	// variations based on merges
+	if (mVar==0)	{
+	}
+	else if (mVar==1)	{
+		m1NameArray[0] = Dialog.getChoice();
+		m1NameArray[1] = Dialog.getChoice();
+		m1NameArray[2] = Dialog.getChoice();
+		m1NameArray[3] = Dialog.getChoice();
+		m1NameArray[4] = Dialog.getChoice();
+		m1NameArray[5] = Dialog.getChoice();
+		m1NameArray[6] = Dialog.getChoice();
+	}
+	else if (mVar==2)	{
+		m1NameArray[0] = Dialog.getChoice();
+		m1NameArray[1] = Dialog.getChoice();
+		m1NameArray[2] = Dialog.getChoice();
+		m1NameArray[3] = Dialog.getChoice();
+		m1NameArray[4] = Dialog.getChoice();
+		m1NameArray[5] = Dialog.getChoice();
+		m1NameArray[6] = Dialog.getChoice();
+		m2NameArray[0] = Dialog.getChoice();
+		m2NameArray[1] = Dialog.getChoice();
+		m2NameArray[2] = Dialog.getChoice();
+		m2NameArray[3] = Dialog.getChoice();
+		m2NameArray[4] = Dialog.getChoice();
+		m2NameArray[5] = Dialog.getChoice();
+		m2NameArray[6] = Dialog.getChoice();
+	}
+	grout = Dialog.getNumber();
+	res = Dialog.getNumber();
+	sbchoice = Dialog.getCheckbox();
+	sblen = Dialog.getNumber();
+	mag = Dialog.getNumber();
+	// decisions collected
+	setBatchMode(true);
+
+	// collect details from images
+	win = getTitle(); // could change this so that name is something more logical
+	win = replace(win,"c:","");
+	win = replace(win,"/","");
+	newName = "mtg" + win;
+	len = gVar + mVar;
+	newImage(newName, "RGB", ((width*len)+(grout*(len-1))), height, 1);
+
+	// paste in grayscales
+	for (i = 0; i < gVar; i++)   {
+		wName = gNameArray[i];
+		selectImage(wName);
+		run("Copy");
+		selectImage(newName);
+		makeRectangle((width*i)+(grout*i), 0, width, height);
+		run("Paste");
+	}
+
+	// build mergeString(s)
+	merge1String = "";
+	merge2String = "";
+
+	for (i = 0; i < 7; i++)   {
+		merge1String += "c" + d2s(i+1,0) + "=[" + m1NameArray[i] + "] ";
+		if (mVar == 2)
+			merge2String += "c" + d2s(i+1,0) + "=[" + m2NameArray[i] + "] ";
+	}
+	merge1String += "keep";
+	merge2String += "keep";
+	// make array to hold merge names
+	mImgArray = newArray("merge1","merge2");
+
+	// paste in the merge(s)
+	for (i = 0; i < mVar; i++)   {
+		if (i == 0) {
+			run("Merge Channels...", merge1String);
+			rename("merge1");
+		}
+		else {
+			run("Merge Channels...", merge2String);
+			rename("merge2");
+		}
+		selectImage(mImgArray[i]);
+		run("Copy");
+		selectImage(newName);
+		makeRectangle(((width*gVar)+(grout*gVar-1))+((width*i)+(grout*i)), 0, width, height);
+		run("Paste");
+	}
+
+	selectImage(newName);
+		// rotate right?
+	if (vChoice == true)
+		run("Rotate 90 Degrees Right");
+
+	//add scale bar (height is same as grout)
+	if (sbchoice==true)	{
+		getDimensions(w, h, c, slices, frames);
+		setColor(255,255,255);
+		fillRect(w-(grout+(sblen/mag)), h-(2*grout), sblen/mag, grout);
+	}
+	//specify dpi default is 300 dpi
+	run("Set Scale...", "distance=res known=1 unit=inch");
+	run("Select None");
+
+	//save montage
+	saveAs("TIFF", dir1+newName);
+	setBatchMode(false);
+	// close originals
+	for (i=0; i<imgArray.length; i++)	{
+		selectImage(imgArray[i]);
+		close();
+	}
+}
+
 function compmtg(vChoice)	{
 	// vChoice is vert if we will do horizontal array
 	imgArray = newArray(nImages);
@@ -382,6 +674,124 @@ function compmtg(vChoice)	{
 	mag = 0.069;
 	// Make dialog box
 	Dialog.create("Compile Montages");
+	// variations based on number of files
+	if (vChoice == "vert")	{
+		Dialog.addMessage("Select order for your compilation, left to right");
+	}
+	else {
+		Dialog.addMessage("Select order for your compilation, top to bottom");
+	}
+	for (i = 0; i < len; i ++)	{
+		labStr = d2s(i+1,0);
+		Dialog.addChoice(labStr, rowArray);
+	}
+	Dialog.addNumber("Row gap (px, default = 2 x grout):", 16);
+	Dialog.addNumber("d.p.i.", 300);
+	Dialog.addCheckbox("Scale bar?", false);
+	Dialog.addNumber("Scale bar size (µm):", 10);
+	Dialog.addNumber("1 px is how many µm?", 0.069);
+	Dialog.show();
+	// variations based on number of files
+	for (i = 0; i < len; i ++)	{
+		nameArray[i] = Dialog.getChoice();
+	}
+	grout = Dialog.getNumber();
+	res = Dialog.getNumber();
+	sbchoice = Dialog.getCheckbox();
+	sblen = Dialog.getNumber();
+	mag = Dialog.getNumber();
+	// decisions collected
+	setBatchMode(true);
+
+	// setup for save
+	win = getTitle();
+	dir1 = getDirectory("image");
+	newName = "cmp" + len + win;
+
+	// get dimensions
+	wArray = newArray(len);
+	hArray = newArray(len);
+	hPosArray = newArray(len+1);
+	hPosArray[0] = 0;
+	height = 0;
+	for (i=0; i<len; i++)   {
+		selectImage(nameArray[i]);
+		if (vChoice == "vert")
+			run("Rotate 90 Degrees Right");
+		getDimensions(w, h, c, slices, frames);
+		wArray[i] = w;
+		hArray[i] = h;
+		hPosArray[i+1] = hPosArray[i] + h;
+		width = width + w;
+		height = height + h;
+	}
+	// check widths are the same
+	if (width / len != w)	{
+		print("Check widths");
+	}
+	newImage(newName, "RGB", w,(height)+(grout*(len-1)), 1);
+	for (i=0; i<len; i++)   {
+		selectImage(nameArray[i]);
+		run("Select All");
+		run("Copy");
+		close();
+		selectImage(newName);
+		makeRectangle(0, (hPosArray[i])+(grout*i), wArray[i], hArray[i]);
+		run("Paste");
+	}
+	// now put back?
+	if (vChoice == "vert")
+		run("Rotate 90 Degrees Left");
+	//add scale bar (height is same as grout)
+	if (sbchoice==true)	{
+		getDimensions(w, h, c, slices, frames);
+		setColor(255,255,255);
+		fillRect(w-((grout/2)+(sblen/mag)), h-(2*(grout/2)), sblen/mag, grout/2);
+	}
+	//specify dpi default is 300 dpi
+	run("Set Scale...", "distance=res known=1 unit=inch");
+	run("Select None");
+	//save montage
+	saveAs("TIFF", dir1+newName);
+	setBatchMode(false);
+}
+
+function mtgcomp()	{
+	imgArray = newArray(nImages);
+	rowArray = newArray(nImages);
+	nameArray = newArray(nImages);
+	widthArray = newArray(nImages);
+	heightArray = newArray(nImages);
+	print("\\Clear");
+	for (i = 0; i < nImages; i ++)	{
+		selectImage(i + 1);
+		imgArray[i] = getImageID();
+		title = getTitle();
+		rowArray[i] = title;
+		getDimensions(ww, hh, cc, ss, ff);
+		widthArray[i] = ww;
+		heightArray[i] = hh;
+	}
+	// check the widths are the same;
+	Array.getStatistics(widthArray, min, max, mean, stdDev);
+	if (stdDev != 0) exit ("Images have unequal widths");
+	theWidth = mean;
+	// check the widths are the same;
+	Array.getStatistics(heightArray, min, max, mean, stdDev);
+	if (stdDev != 0) exit ("Images have unequal heights");
+	theHeight = mean;
+	// vChoice is vert if we will do horizontal array
+	vChoice = "";
+	if (theHeight > theWidth) vChoice = "vert";
+	len = imgArray.length;
+
+	// Standard sizes
+	grout = 16;
+	res = 300;
+	sblen = 10;
+	mag = 0.069;
+	// Make dialog box
+	Dialog.create("Compile the montages");
 	// variations based on number of files
 	if (vChoice == "vert")	{
 		Dialog.addMessage("Select order for your compilation, left to right");

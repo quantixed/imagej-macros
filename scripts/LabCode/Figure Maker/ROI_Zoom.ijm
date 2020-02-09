@@ -9,12 +9,6 @@
  */
 
 macro "Add ROI Zoom"	{
-	s=call("ij.macro.Interpreter.getAdditionalFunctions");
-	if(startsWith(s,"//qFunctions")!=1) {
-		qFpath = getDirectory("plugins")+"/quantixed/Figure Maker/qFunctions.txt";
-		functions = File.openAsString(qFpath);
-		call("ij.macro.Interpreter.setAdditionalFunctions", functions);
-		}
 	if (nImages > 1) exit ("Use a single image or single montage");
 	if (nImages == 0)	exit("No image open");
 
@@ -177,7 +171,7 @@ macro "Add ROI Zoom"	{
 						dStarty = w + (i * (w + grout)) - dSize;
 					}
 					// dStartx calculated outside the loop
-	
+
 					// make border for zoom
 					if (corner == "LB")	{
 						fillRect(dStartx,dStarty-bStroke,dSize+bStroke,dSize+bStroke);
@@ -238,7 +232,7 @@ macro "Add ROI Zoom"	{
 						dStartx = h + (i * (h + grout)) - dSize; // R
 					}
 					// dStarty calculated outside the loop
-	
+
 					// make border for zoom
 					if (corner == "LB")	{
 						fillRect(dStartx,dStarty-bStroke,dSize+bStroke,dSize+bStroke);

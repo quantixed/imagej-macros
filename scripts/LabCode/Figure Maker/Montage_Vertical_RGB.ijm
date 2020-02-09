@@ -9,8 +9,8 @@
  There is a vertical version called "Montage Vertical RGB"
 
  For more flexible montages you can use "Montage Horizontal Flexible" (or the vertical version)
- It should work for all images (>1 chnnel or slice) including a single frame RGB.
- You can arange grayscale channel panels and up to two merges that you specify.
+ It should work for all images (>1 channel or slice) including a single frame RGB.
+ You can arrange grayscale channel panels and up to two merges that you specify.
  As for the simple montage, you can specify the grout and scale bar.
 
  Batch processing of a directory TIFFs is possible for "Montage Horizontal RGB".
@@ -18,12 +18,6 @@
 */
 
 macro "Montage Vertical RGB" {
-	s=call("ij.macro.Interpreter.getAdditionalFunctions");
-	if(startsWith(s,"//qFunctions")!=1) {
-		qFpath = getDirectory("plugins")+"/quantixed/Figure Maker/qFunctions.txt";
-		functions = File.openAsString(qFpath);
-		call("ij.macro.Interpreter.setAdditionalFunctions", functions);
-		}
 	if (nImages > 0) exit ("Please close all open images");
 	filepath=File.openDialog("Select a File");
 	open(filepath);
