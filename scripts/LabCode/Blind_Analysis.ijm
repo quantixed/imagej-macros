@@ -13,7 +13,7 @@ macro "Blind Analysis" {
 	// Make an array and extend it with names of *.tif only
 	imNames = newArray(0);
 	for (i = 0; i < allNames.length; i ++) {
-		if (endsWith(allNames[i], ".tif")) {
+		if (endsWith(allNames[i], ".tif") || endsWith(allNames[i], ".tiff")) {
 			imNames = append(imNames, allNames[i]);
 		}
 	}
