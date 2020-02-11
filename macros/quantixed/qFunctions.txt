@@ -293,7 +293,6 @@ function mtgcomp()	{
 	nameArray = newArray(nImages);
 	widthArray = newArray(nImages);
 	heightArray = newArray(nImages);
-	print("\\Clear");
 	for (i = 0; i < nImages; i ++)	{
 		selectImage(i + 1);
 		imgArray[i] = getImageID();
@@ -311,9 +310,10 @@ function mtgcomp()	{
 	Array.getStatistics(heightArray, min, max, mean, stdDev);
 	if (stdDev != 0) exit ("Images have unequal heights");
 	theHeight = mean;
-	// vChoice is vert if we will do horizontal array
-	vChoice = "";
-	if (theHeight > theWidth) vChoice = "vert";
+	// vChoice is true if we will compile columns horizontally
+	// vChoice is false (default) means compiling rows vertically
+	vChoice = false;
+	if (theHeight > theWidth) vChoice = true;
 	len = imgArray.length;
 
 	// Standard sizes
@@ -324,11 +324,11 @@ function mtgcomp()	{
 	// Make dialog box
 	Dialog.create("Compile the montages");
 	// variations based on number of files
-	if (vChoice == "vert")	{
-		Dialog.addMessage("Select order for your compilation, left to right");
+	if (vChoice == true)	{
+		Dialog.addMessage("Detected columns.\rSelect order for your compilation, left to right");
 	}
 	else {
-		Dialog.addMessage("Select order for your compilation, top to bottom");
+		Dialog.addMessage("Detected rows.\rSelect order for your compilation, top to bottom");
 	}
 	for (i = 0; i < len; i ++)	{
 		labStr = d2s(i+1,0);
@@ -339,6 +339,7 @@ function mtgcomp()	{
 	Dialog.addCheckbox("Scale bar?", false);
 	Dialog.addNumber("Scale bar size (µm):", 10);
 	Dialog.addNumber("1 px is how many µm?", 0.069);
+	Dialog.addCheckbox("Force other orientation:", false);
 	Dialog.show();
 	// variations based on number of files
 	for (i = 0; i < len; i ++)	{
@@ -349,6 +350,10 @@ function mtgcomp()	{
 	sbchoice = Dialog.getCheckbox();
 	sblen = Dialog.getNumber();
 	mag = Dialog.getNumber();
+	forceChoice = Dialog.getCheckbox();
+	// forceChoice reverses the logic of vChoice
+	if(vChoice == true && forceChoice == true) vChoice = false;
+	else if(vChoice == false && forceChoice == true) vChoice = true;
 	// decisions collected
 	setBatchMode(true);
 
@@ -365,7 +370,7 @@ function mtgcomp()	{
 	height = 0;
 	for (i=0; i<len; i++)   {
 		selectImage(nameArray[i]);
-		if (vChoice == "vert")
+		if (vChoice == true)
 			run("Rotate 90 Degrees Right");
 		getDimensions(w, h, c, slices, frames);
 		wArray[i] = w;
@@ -389,7 +394,7 @@ function mtgcomp()	{
 		run("Paste");
 	}
 	// now put back?
-	if (vChoice == "vert")
+	if (vChoice == true)
 		run("Rotate 90 Degrees Left");
 	//add scale bar (height is same as grout)
 	if (sbchoice==true)	{
