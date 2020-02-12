@@ -12,7 +12,6 @@ After installation, all macros can be found under the menu item called **LabCode
 	2. Make a [montage](#montage)
 	3. Optional: add [ROI Zoom](#roi-zoom)
 	4. [Compile](#put-the-rows-together) your montages
-	4. [Columns](#i-want-columns-not-rows) not rows?
 	5. [Figures the quantixed way](#figures-the-quantixed-way)
 2. [Blind Analysis](#blind-analysis)
 3. [ELN Saver](#eln-saver)
@@ -27,7 +26,7 @@ There are macros to help you to make figures with montages - made the way we lik
 
 #### Prepare your images
 
-Load in your multichannel image, adjust how you want and then crop.
+Load in your multichannel image, adjust how you want and then crop to a square.
 To do this select *Click Square ROI* from the >> on the toolbar.
 ![fm002](img/screenshot02.jpg)
 This tool gives 400 x 400 pixel square ROI, right click to get a different size.
@@ -37,32 +36,32 @@ Crop your images and save them as TIFFs.
 ![fm005](img/screenshot05.jpg)
 
 
-#### Make a montage row
+#### Make a montage
 
-To make a nicely spaced montage (row of images). Select *LabCode>Figure Maker>Montage Horizontal Flexible*
-
-Note that there are other options here: to make a simple RGB montage (this is good for three channel images were you just want one merge panel, this also works on whole directories), there are [vertical montage](#i-want-columns-not-rows) options for flexible and RGB montages.
+To make a nicely spaced montage (row of images). Select *LabCode > Figure Maker > Make Montage*
 
 You are asked to pick your cropped TIFF.
 
-You can specify the number of grayscale (channel) panels and choose the number of merge.
+You can specify the number of grayscale (channel) panels and choose the number of merges.
 
 ![fm008](img/screenshot08.jpg)
 
-In the next dialog you can pick which panels go where in your montage.
+In the next dialog you can pick which panels go where in your montage and how to merge channels using which colours.
 
-Grout and scale bars can be added flexibly, no border is added. This is different to ImageJ's Make Montage and makes figure rows the [way we like them](figures-the-quantixed-way)! Note that if you are going to compile montages, it's best to add a single scale bar at this stage.
+You can also specify a vertical (column) montage rather than horizontal (row).
+
+Grout and scale bars can be added flexibly, no border is added. This is different to ImageJ's Make Montage and makes figure rows the [way we like them](figures-the-quantixed-way)! Note that if you are going to compile montages, it's best to add a scale bar at this stage to just one of the images.
 
 ![fm009](img/screenshot09.jpg)
 
-Your montage is saved in the same directory as the original image. The macro leaves it there, so that you can admire your awesome data!
+Your montage is saved in the same directory as the original image. The macro leaves it displayed, so that you can admire your awesome data!
 
 ![fm010](img/screenshot10.jpg)
 
 
 #### Optional: add ROIs and zooms
 
-Sometimes, we like to add a ROI and a zoomed version of this ROI to various panels in the montage. To do this open your montage and select *LabCode>Figure Maker>ROI Zoom*
+Sometimes, we like to add a ROI and a zoomed version of this ROI to various panels in the montage. To do this open your montage and select *LabCode > Figure Maker > ROI Zoom*
 
 ![fm014](img/screenshot14.jpg)
 
@@ -74,24 +73,21 @@ After clicking OK, you are asked to select the centre of the ROI.
 
 Note that this code will run on stacks as well so that you can add ROIs and zooms to movies!
 
+It only works on square images and montages made from squares. If your zooms are in the wrong place, check the size(s) of your input images.
+
 #### Now put the rows together
 
-Finally, if we have more than one montage, we need to compile them together. Load in all the montages you'd like to compile. Now select *LabCode>Figure Maker>Compile Row Montages*
+Finally, if we have more than one montage, we need to compile them together. Load in all the montages you'd like to compile. Now select *LabCode > Figure Maker > Montage Compiler*
 
 The dialog asks you to select which montage you'd like where.
+
+The routine is intelligent enough to recognise vertical and horizontal montages and to compile them left-to-right or top-to-bottom as appropriate.
 
 ![fm012](img/screenshot12.jpg)
 
 Your compilation will save back in the same directory as the montages. Note, that you can always make one compilation and then add more montages or other compilations.
 
 ![fm013](img/screenshot13.jpg)
-
-
-#### I want columns not rows
-
-This is fine. Just select *LabCode>Figure Maker>Montage Vertical Flexible* This will do the same thing but put the channels vertically with any merges at the bottom. Note that there is a version to make simple RGB montages. There is a vertical version of this too.
-
-Remember that when you compile vertical montages, you need to select *LabCode>Figure Maker>Compile Column Montages*
 
 Note that **results from Figure Maker are saved as 300 ppi TIFF** ready for use in Illustrator or equivalent software.
 
