@@ -331,7 +331,7 @@ function mtgcomp()	{
 	if (width / len != w)	{
 		print("Check widths");
 	}
-	newImage(newName, "RGB", w,(height)+(grout*(len-1)), 1);
+	newImage(newName, "RGB", w, height + (grout * (len - 1)), 1);
 	for (i=0; i<len; i++)	 {
 		selectImage(nameArray[i]);
 		run("Select All");
@@ -409,7 +409,7 @@ function convertChoicesToWindows(choiceArray,winArray)	{
 			convertedArray[i] = "*None*";
 		} else	{
 			lookupInteger = parseInt(replace(arrayItem,"C",""));
-			convertedArray[i] = winArray[lookupInteger];
+			convertedArray[i] = winArray[lookupInteger - 1];
 		}
 	}
 	return convertedArray;
