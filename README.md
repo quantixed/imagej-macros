@@ -1,5 +1,7 @@
 # imagej-macros
-Some simple macros for Fiji/ImageJ that we are using in the lab. These tools are now available via the *quantixed* ImageJ [update site](http://sites.imagej.net/Quantixed/). Instructions for how to follow a 3rd party update site are [here](http://imagej.net/How_to_follow_a_3rd_party_update_site). This is the best way to install these macros and maintain the latest versions.
+Some simple macros for Fiji/ImageJ that we are using in the lab.
+
+Most of these tools are available via the *quantixed* ImageJ [update site](http://sites.imagej.net/Quantixed/). Instructions for how to follow a 3rd party update site are [here](http://imagej.net/How_to_follow_a_3rd_party_update_site). This is the best way to install these macros and maintain the latest versions.
 
 If you want to install manually, add the contents of `macros` and `scripts` to the corresponding directories in your Fiji/ImageJ installation.
 
@@ -17,6 +19,7 @@ After installation, all macros can be found under the menu item called **LabCode
 3. [ELN Saver](#eln-saver)
 4. [Other Utilities](#other-utilities)
 5. [Misc Macros](#misc-macros)
+6. [I'm getting errors](#troubleshooting)
 
 
 ### Figure Maker
@@ -58,6 +61,9 @@ Your montage is saved in the same directory as the original image. The macro lea
 
 ![fm010](img/screenshot10.jpg)
 
+#### Multiple montages
+
+If you want to make many montages. Then select *LabCode > Figure Maker > Make Montage Directory*. This macro allows the user to make montages from TIFFs in a directory. A dialog is shown at the start that allows the user to select which channels go where and then the montages are made in batch mode.
 
 #### Optional: add ROIs and zooms
 
@@ -132,3 +138,29 @@ Maybe you like to open a whole directory of images, look through them, closing t
 ### Misc Macros
 
 Other macros that we use - but are not included in the update site - are found in the `misc` directory.
+
+--
+
+### Troubleshooting
+
+Most problems are solved by allowing Fiji's updater to install the latest code from the *quantixed* ImageJ Update Site.
+
+**Still not working?** All routines use a number of custom functions which get loaded when Fiji starts up. Errors in running these routines usually traceback to third party code that modifies `StartupMacros.fiji.ijm`. Which can be found in the `macros` directory. Specifically, if the third party has deleted this code block, then none of the autorun functions happen at startup.
+
+```// The macro named "AutoRun" runs when ImageJ starts.
+
+macro "AutoRun" {
+	// run all the .ijm scripts provided in macros/AutoRun/
+	autoRunDirectory = getDirectory("imagej") + "/macros/AutoRun/";
+	if (File.isDirectory(autoRunDirectory)) {
+		list = getFileList(autoRunDirectory);
+		// make sure startup order is consistent
+		Array.sort(list);
+		for (i = 0; i < list.length; i++) {
+			if (endsWith(list[i], ".ijm")) {
+				runMacro(autoRunDirectory + list[i]);
+			}
+		}
+	}
+}```
+If you can't bear to uninstall the third-party code (or don't know which update site causes the problem), just paste that code block into `StatupMacros.fiji.ijm` and things will start to work again.

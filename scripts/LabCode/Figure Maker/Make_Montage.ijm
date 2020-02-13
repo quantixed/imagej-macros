@@ -24,18 +24,9 @@ macro "Make Montage" {
   dir1 = getDirectory("image");
 	// determine what we are dealing width
 	getDimensions(ww, hh, cc, ss, ff);
-	// warn if image is not square
-	if (ww != hh) print("Input image is not square");
-	//
-	if (bitDepth() == 8 || bitDepth() == 16) {
-		if (cc * ss * ff == 1) exit ("Need more than one channel, slice, or frame");
-		if ((cc > 1 && ss > 1) || (cc > 1 && ff > 1) || (ss > 1 && ff > 1)) exit ("Reduce dimensions before making montage");
+	win = getTitle();
+	okVar = checkImageForMontage(win);
+	if (okVar == true) {
 		montageMaker(dir1);
 	}
-	else if (bitDepth() == 24 && ss * ff == 1)	{
-		run("Split Channels");
-		run("Images to Stack");
-		montageMaker(dir1);
-	}
-  else exit ("Input image does not meet requirements for montage");
 }

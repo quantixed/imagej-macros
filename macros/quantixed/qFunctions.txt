@@ -30,6 +30,8 @@ function montageMaker(dir)	{
 	gPanels = Dialog.getChoice();
 	mPanels = Dialog.getChoice();
 	vChoice = Dialog.getCheckbox();
+
+	setBatchMode(true);
 	// if vertical montage, rotate all images left
 	if (vChoice == true) {
 		for (i = 0; i < numImages; i ++)	{
@@ -211,69 +213,17 @@ function montageMaker(dir)	{
 	sblen = Dialog.getNumber();
 	mag = Dialog.getNumber();
 	// decisions collected
-	setBatchMode(true);
 
 	// collect details from images
 	win = getTitle();
 	newName = "mtg" + safeName(win);
-	len = gVar + mVar;
-	newImage(newName, "RGB", ((width * len) + (grout * (len - 1))), height, 1);
-
-	// paste in grayscales
-	for (i = 0; i < gVar; i++)	 {
-		wName = gNameArray[i];
-		selectImage(wName);
-		run("Copy");
-		selectImage(newName);
-		makeRectangle((width * i) + (grout * i), 0, width, height);
-		run("Paste");
+	if (mVar==0)	{
+		m1NameArray = newArray(0);
+		m2NameArray = newArray(0);
+	}    else if (mVar==1)	{
+		m2NameArray = newArray(0);
 	}
-
-	// build mergeString(s)
-	merge1String = "";
-	merge2String = "";
-
-	for (i = 0; i < 7; i++)	 {
-		merge1String += "c" + d2s(i+1,0) + "=[" + m1NameArray[i] + "] ";
-		if (mVar == 2)
-			merge2String += "c" + d2s(i+1,0) + "=[" + m2NameArray[i] + "] ";
-	}
-	merge1String += "keep";
-	merge2String += "keep";
-	// make array to hold merge names
-	mImgArray = newArray("merge1","merge2");
-
-	// paste in the merge(s)
-	for (i = 0; i < mVar; i++)	 {
-		if (i == 0) {
-			run("Merge Channels...", merge1String);
-			rename("merge1");
-		}
-		else {
-			run("Merge Channels...", merge2String);
-			rename("merge2");
-		}
-		selectImage(mImgArray[i]);
-		run("Copy");
-		selectImage(newName);
-		makeRectangle(((width*gVar)+(grout*gVar-1))+((width*i)+(grout*i)), 0, width, height);
-		run("Paste");
-	}
-
-	selectImage(newName);
-		// rotate right?
-	if (vChoice == true)
-		run("Rotate 90 Degrees Right");
-
-	//add scale bar (height is same as grout)
-	if (sbchoice==true)	{
-		getDimensions(w, h, c, slices, frames);
-		setColor(255,255,255);
-		fillRect(w-(grout+(sblen/mag)), h-(2*grout), sblen/mag, grout);
-	}
-	//specify dpi default is 300 dpi
-	run("Set Scale...", "distance=res known=1 unit=inch");
-	run("Select None");
+	generateMontage(newName, vChoice, gVar, mVar, ww, hh, grout, res, sbchoice, sblen, mag, gNameArray, m1NameArray, m2NameArray);
 
 	//save montage
 	saveAs("TIFF", dir + newName);
@@ -483,7 +433,7 @@ function generateMontage(newName, vChoice, gVar, mVar, width, height, grout, res
 	merge2String = "";
 
 	for (i = 0; i < 7; i++)	 {
-		if (mVar == 1) merge1String += "c" + d2s(i+1,0) + "=[" + m1NameArray[i] + "] ";
+		if (mVar > 0) merge1String += "c" + d2s(i+1,0) + "=[" + m1NameArray[i] + "] ";
 		if (mVar == 2) merge2String += "c" + d2s(i+1,0) + "=[" + m2NameArray[i] + "] ";
 	}
 	merge1String += "keep";
