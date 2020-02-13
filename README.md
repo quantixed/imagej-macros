@@ -1,4 +1,5 @@
 # imagej-macros
+
 Some simple macros for Fiji/ImageJ that we are using in the lab.
 
 Most of these tools are available via the *quantixed* ImageJ [update site](http://sites.imagej.net/Quantixed/). Instructions for how to follow a 3rd party update site are [here](http://imagej.net/How_to_follow_a_3rd_party_update_site). This is the best way to install these macros and maintain the latest versions.
@@ -171,5 +172,7 @@ macro "AutoRun" {
 			}
 		}
 	}
-}```
+}
+```
+
 If you can't bear to uninstall the third-party code (or don't know which update site causes the problem), just paste that code block into `StatupMacros.fiji.ijm` and things will start to work again.
