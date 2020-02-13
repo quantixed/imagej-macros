@@ -31,12 +31,17 @@ There are macros to help you to make figures with montages - made the way we lik
 
 Load in your multichannel image, adjust how you want and then crop to a square.
 To do this select *Click Square ROI* from the >> on the toolbar.
-![fm002](img/screenshot02.jpg)
+
+![fm001](img/screenshot01.png)
+
 This tool gives 400 x 400 pixel square ROI, right click to get a different size.
 Select the area you want.
-![fm004](img/screenshot04.jpg)
+
+![fm002](img/screenshot02.png)
+
 Crop your images and save them as TIFFs.
-![fm005](img/screenshot05.jpg)
+
+![fm003](img/screenshot03.png)
 
 
 #### Make a montage
@@ -47,7 +52,7 @@ You are asked to pick your cropped TIFF.
 
 You can specify the number of grayscale (channel) panels and choose the number of merges.
 
-![fm008](img/screenshot08.jpg)
+![fm004](img/screenshot04.png)
 
 In the next dialog you can pick which panels go where in your montage and how to merge channels using which colours.
 
@@ -55,11 +60,11 @@ You can also specify a vertical (column) montage rather than horizontal (row).
 
 Grout and scale bars can be added flexibly, no border is added. This is different to ImageJ's Make Montage and makes figure rows the [way we like them](figures-the-quantixed-way)! Note that if you are going to compile montages, it's best to add a scale bar at this stage to just one of the images.
 
-![fm009](img/screenshot09.jpg)
+![fm005](img/screenshot05.png)
 
 Your montage is saved in the same directory as the original image. The macro leaves it displayed, so that you can admire your awesome data!
 
-![fm010](img/screenshot10.jpg)
+![fm006](img/screenshot06.png)
 
 #### Multiple montages
 
@@ -69,13 +74,17 @@ If you want to make many montages. Then select *LabCode > Figure Maker > Make Mo
 
 Sometimes, we like to add a ROI and a zoomed version of this ROI to various panels in the montage. To do this open your montage and select *LabCode > Figure Maker > ROI Zoom*
 
-![fm014](img/screenshot14.jpg)
+![fm007](img/screenshot07.png)
 
 You can pick which corner you want the zoom and which panels you'd like to add an ROI and zoom.
 
 After clicking OK, you are asked to select the centre of the ROI.
 
-![fm015](img/screenshot15.jpg)
+![fm008](img/screenshot08.png)
+
+The resulting image is saved in the same directory as the montage.
+
+![fm009](img/screenshot09.png)
 
 Note that this code will run on stacks as well so that you can add ROIs and zooms to movies!
 
@@ -89,11 +98,11 @@ The dialog asks you to select which montage you'd like where.
 
 The routine is intelligent enough to recognise vertical and horizontal montages and to compile them left-to-right or top-to-bottom as appropriate.
 
-![fm012](img/screenshot12.jpg)
+![fm0010](img/screenshot10.png)
 
-Your compilation will save back in the same directory as the montages. Note, that you can always make one compilation and then add more montages or other compilations.
+Your compilation will save back in the same directory as the montages. Note that you can use this macro to make one compilation and then use it again to add more montages (extra rows) or other compilations. Very large compilation can be built this way.
 
-![fm013](img/screenshot13.jpg)
+![fm0011](img/screenshot11.png)
 
 Note that **results from Figure Maker are saved as 300 ppi TIFF** ready for use in Illustrator or equivalent software.
 
