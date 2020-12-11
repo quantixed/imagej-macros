@@ -454,7 +454,7 @@ function generateMontage(newName, vChoice, gVar, mVar, width, height, grout, res
 		selectImage(mImgArray[i]);
 		run("Copy");
 		selectImage(newName);
-		makeRectangle(((width * gVar) + (grout * gVar) + ((width * i) + (grout * i)), 0, width, height);
+		makeRectangle(((width * gVar) + (grout * gVar)) + ((width * i) + (grout * i)), 0, width, height);
 		run("Paste");
 	}
 	selectImage(newName);
