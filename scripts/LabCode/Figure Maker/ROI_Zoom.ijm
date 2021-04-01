@@ -5,6 +5,7 @@
  * It is meant to be used for montages but it will work on single square images.
  * Open 1 image. Run Macro. Pick settings.
  * Click in the centre of where you want your ROI to be (any panel will work).
+ * There is an option to use foreground color instead of white (default) for borders.
  * http://github.com/quantixed/imagej-macros/
  */
 
@@ -66,6 +67,7 @@ macro "Add ROI Zoom"	{
 	// setting border to 4 px because 1 pt is 1/72 inch
 	// at 300 ppi, this would be 300/72 = 4.167 px
 	Dialog.addNumber("Border for boxes (px)", 4);
+	Dialog.addCheckbox("White border?", true);
 	Dialog.addMessage("Make boxes and zooms in panels...");
 	Dialog.addCheckboxGroup(1,nPanel,labels,defaults);
 	// need to add something here so that the user can define where boxes go
@@ -75,6 +77,7 @@ macro "Add ROI Zoom"	{
 	bSize = Dialog.getNumber();
 	expand = Dialog.getNumber();
 	bStroke = Dialog.getNumber();
+	colorChoice = Dialog.getCheckbox();
 	for (i=0; i<nPanel; i++)	{
 		panelDecisions[i] = Dialog.getCheckbox();
 	}
@@ -126,10 +129,14 @@ macro "Add ROI Zoom"	{
 	}
 
 	setBatchMode(true);
-	// border will be white
-	if (bitDepth() == 8) setColor(255);
-	if (bitDepth() == 24) setColor(255,255,255);
-	if (bitDepth() == 16) setColor(65535);
+	// border will be white if colorChoice is True
+	if (colorChoice) {
+		if (bitDepth() == 8) setColor(255);
+		if (bitDepth() == 24) setColor(255,255,255);
+		if (bitDepth() == 16) setColor(65535);
+	} else {
+		setColor(getValue("color.foreground"));
+	}
 
 	if (vChoice == "vert") {
 		if (corner == "RT" || corner == "RB")	{
