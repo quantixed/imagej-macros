@@ -179,6 +179,9 @@ function montageMaker(dir)	{
 		gNameArray[5] = Dialog.getChoice();
 		gNameArray[6] = Dialog.getChoice();
 	}
+	else if (gVar > 7)	{
+		gNameArray = colArray;
+	}
 	// variations based on merges
 	if (mVar==0)	{
 	}
