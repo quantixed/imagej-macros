@@ -53,7 +53,7 @@ function montageMaker(dir)	{
 	}
 
 	// Next dialog
-	grout=8;
+	grout = 8;
 	Dialog.create("Pick your panels");
 	Dialog.addMessage("Select order for grayscale");
 	// variations based on number of files
@@ -130,11 +130,12 @@ function montageMaker(dir)	{
 		Dialog.addChoice("Magenta", mArray);
 		Dialog.addChoice("Yellow", mArray);
 	}
-	Dialog.addNumber("Grout size (pixels):", 8);
+	Dialog.addNumber("Grout size (pixels):", grout);
 	Dialog.addNumber("d.p.i.", 300);
 	Dialog.addCheckbox("Scale bar?", false);
 	Dialog.addNumber("Scale bar size (µm):", 10);
 	Dialog.addNumber("1 px is how many µm?", pixelWidth);
+	Dialog.addMessage("If the scale is 0.069, check the actual pixel size of your image.")
 	Dialog.show();
 	// variations based on channels
 	if (gVar==1)	{
@@ -178,9 +179,6 @@ function montageMaker(dir)	{
 		gNameArray[4] = Dialog.getChoice();
 		gNameArray[5] = Dialog.getChoice();
 		gNameArray[6] = Dialog.getChoice();
-	}
-	else if (gVar > 7)	{
-		gNameArray = colArray;
 	}
 	// variations based on merges
 	if (mVar==0)	{
