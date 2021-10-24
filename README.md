@@ -131,6 +131,13 @@ For multichannel microscopy images, e.g. from an immunofluorescence experiment, 
 
 This is a simple utility to save a version of the file you are viewing in Fiji/ImageJ to put in your electronic lab notebook. A png version or low-res movie of the file you are looking at is saved to the Desktop with a unique name. A text file is saved to explain the filenames. 
 
+### Movie Annotation
+
+Two macros to:
+
+1. Add arrows to movies to highlight and track an object of interest. Unlike other scripts out there, this one places an arrowhead in a fixed orientation/distance from the object and allows annotations in any frame (not _all_ frames).
+2. Irregular Time Stamps - adds timestamps to movies, formatting them in hh:mm or mm:ss. Unlike other versions, negative times are allowed and the time intervals do not have to be regular. Requires a new line separated text file of times.
+
 --
 
 ### Other utilities
