@@ -53,10 +53,11 @@ macro Annotate_Movie	{
 	    frameNumbers[i] = getResult('Frame', i);
 	}
 	roiManager("reset");
+	arrowWidth = 2; // comment out this line if it is specified above
 	run("Arrow Tool...", "width="+arrowWidth+" size="+arrowSize+" color=White style=Filled");
 	selectWindow(original);
 		for (i = 0; i < nResults(); i++) {
-			arrowArray = makeArrowPositions(xCoords[i],yCoords[i],arrowSel,arrowOffset);
+			arrowArray = makeArrowPositions(xCoords[i],yCoords[i],arrowSel,arrowOffset,arrowSize);
 		    makeArrow(arrowArray[0], arrowArray[1], arrowArray[2], arrowArray[3], "filled");
 			Roi.setPosition(0, 0, frameNumbers[i]);
 		    Overlay.addSelection();
@@ -64,7 +65,7 @@ macro Annotate_Movie	{
 	}
 }
 
-function makeArrowPositions(xc,yc,radiansOfArrow,offPx)	{
+function makeArrowPositions(xc, yc, radiansOfArrow, offPx, widthOfArrow)	{
 	//xStart, yStart, xStop, yStop
 	theArrowArray = newArray(4);
 	if(widthOfArrow < 10) {
