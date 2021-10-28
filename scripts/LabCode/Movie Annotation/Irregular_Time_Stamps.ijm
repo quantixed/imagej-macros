@@ -8,10 +8,13 @@
  * 		- time in seconds (or minutes) they get styled as 00:00
  * 		- each time on a new line
  * 		- same number of lines as frames
+ * Ideas for future: 
+ * 		- deal with milliseconds
+ * 		- allow user to specify format
  */
 
 macro Timestamps_From_File {
-// Label series using time stamps in a text file
+// Label series using time stamps from a text file
 	requires("1.49");
 	if (nImages == 0) exit("Stack or hyperstack required.");
 	title1 = getTitle();
@@ -60,7 +63,7 @@ macro Timestamps_From_File {
 	}
 	
  	for (i = 0; i < entries.length; i++) {
-		t = parseInt(entries[i]);
+		t = parseInt(entries[i]); // this line results in seconds or minutes being whole numbers
 		if (polarity == true) {
 			if (t>=0) s = "+"+pad(floor((t/60)%60))+":"+pad(t%60); // time sec/60 stuff
 			else s = "-"+pad(floor((-t/60)%60))+":"+pad(-t%60); // deal with negative number
@@ -128,4 +131,26 @@ function whereDoesStampGo(corner, ww, hh, textSize, longLabel)	{
 	}
 	
 	return coords;
+}
+
+// this macro was contributed by Meghane Sittewelle
+// allows user to save text file of time stamps for use in the main macro
+
+macro Save_Time_Stamps_To_Text_File	{
+	run("Bio-Formats Macro Extensions");
+	id = File.openDialog("Choose a file");
+	Ext.setId(id);
+	Ext.getImageCount(imageCount);
+	deltaT = newArray(imageCount);
+	// make a text file
+	dirsave = File.getDirectory(id);
+	filename = File.getNameWithoutExtension(id);
+	f = File.open(dirsave+File.separator+filename+"_deltaT.txt");
+	
+	for (no = 0; no < imageCount; no ++) {
+		Ext.getPlaneTimingDeltaT(deltaT[no], no);
+		print(f, deltaT[no] + "\n");
+	}
+	
+	File.close(f);
 }
