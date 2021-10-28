@@ -8,7 +8,7 @@
  * 		- time in seconds (or minutes) they get styled as 00:00
  * 		- each time on a new line
  * 		- same number of lines as frames
- * Ideas for future: 
+ * Ideas for future:
  * 		- deal with milliseconds
  * 		- allow user to specify format
  */
@@ -22,19 +22,19 @@ macro Timestamps_From_File {
 	getDimensions(width, height, channels, slices, frames);
 	if (slices == 1 && frames == 1) exit("Stack or hyperstack required.");
 	if (Stack.isHyperstack == false && slices > 1) {
-		imgType = "stack"; 
+		imgType = "stack";
 	} else {
 		imgType = "hyperstack";
 	}
 
 	// find the text file containing time stamps and load it.
-	pathfile = File.openDialog("Choose the file to Open:"); 
-	list = File.openAsString(pathfile); // opens file 
+	pathfile = File.openDialog("Choose the file to Open:");
+	list = File.openAsString(pathfile); // opens file
  	entries = split(list, "\n"); // splits lines of text into array
 
- 	// warn user if the number of timestamps is less than the number of slices or 
- 	if(imgType == "stack" && (entries.length != slices)) print("Warning: number of timestamps does not match number of slices"); 
- 	if(imgType == "hyperstack" && (entries.length != frames)) print("Warning: number of timestamps does not match number of frames"); 
+ 	// warn user if the number of timestamps is less than the number of slices or
+ 	if(imgType == "stack" && (entries.length != slices)) print("Warning: number of timestamps does not match number of slices");
+ 	if(imgType == "hyperstack" && (entries.length != frames)) print("Warning: number of timestamps does not match number of frames");
 
 	stampSize = howBigShouldTextBe(width,height);
 	// make dialog for user input
@@ -49,9 +49,9 @@ macro Timestamps_From_File {
 	stampPos = Dialog.getChoice();
 	stampSize = Dialog.getNumber();
 	flattenOpt = Dialog.getCheckbox();
- 	
+
  	setBatchMode(true);
- 	run("Colors...", "foreground=white background=black selection=white"); 
+ 	run("Colors...", "foreground=white background=black selection=white");
 	selectWindow(title1);
 	polarity = false;
 	for (i = 0; i < entries.length; i++) {
@@ -61,7 +61,7 @@ macro Timestamps_From_File {
 			break;
 		}
 	}
-	
+
  	for (i = 0; i < entries.length; i++) {
 		t = parseInt(entries[i]); // this line results in seconds or minutes being whole numbers
 		if (polarity == true) {
@@ -85,9 +85,9 @@ macro Timestamps_From_File {
 
 function pad(n) {
 	// pad single digit numbers with a preceding zero
-	str = toString(n); // decimal rep of number j 
-	if (lengthOf(str)==1) str="0"+str; 
-	
+	str = toString(n); // decimal rep of number j
+	if (lengthOf(str)==1) str="0"+str;
+
 	return str;
 }
 
@@ -99,7 +99,7 @@ function howBigShouldTextBe(ww, hh)	{
 		bigDim = maxOf(ww,hh);
 		fSize = floor(bigDim / 200) * 12;
 	}
-	
+
 	return fSize;
 }
 
@@ -112,7 +112,7 @@ function whereDoesStampGo(corner, ww, hh, textSize, longLabel)	{
 		xSize = 4 + (2.75 * textSize);
 		ySize = -4.5 + (0.9 * textSize);
 	}
-	
+
 	if (corner == "LT")	{
 		coords[0] = 2;
 		coords[1] = 2 + ySize;
@@ -129,28 +129,6 @@ function whereDoesStampGo(corner, ww, hh, textSize, longLabel)	{
 		coords[0] = ww - 2 - xSize;
 		coords[1] = hh - 2;
 	}
-	
+
 	return coords;
-}
-
-// this macro was contributed by Meghane Sittewelle
-// allows user to save text file of time stamps for use in the main macro
-
-macro Save_Time_Stamps_To_Text_File	{
-	run("Bio-Formats Macro Extensions");
-	id = File.openDialog("Choose a file");
-	Ext.setId(id);
-	Ext.getImageCount(imageCount);
-	deltaT = newArray(imageCount);
-	// make a text file
-	dirsave = File.getDirectory(id);
-	filename = File.getNameWithoutExtension(id);
-	f = File.open(dirsave+File.separator+filename+"_deltaT.txt");
-	
-	for (no = 0; no < imageCount; no ++) {
-		Ext.getPlaneTimingDeltaT(deltaT[no], no);
-		print(f, deltaT[no] + "\n");
-	}
-	
-	File.close(f);
 }
