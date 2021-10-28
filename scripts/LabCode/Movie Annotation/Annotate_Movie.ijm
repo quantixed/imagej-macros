@@ -50,7 +50,11 @@ macro Annotate_Movie	{
 	run("Measure");
 	frameNumbers = newArray(nResults());
 	for (i = 0; i < nResults(); i++) {
-	    frameNumbers[i] = getResult('Frame', i);
+		if(Stack.isHyperstack == true) {
+			frameNumbers[i] = getResult('Frame', i);
+		} else {
+			frameNumbers[i] = getResult('Slice', i);
+		}
 	}
 	roiManager("reset");
 	arrowWidth = 2; // comment out this line if it is specified above
@@ -59,10 +63,17 @@ macro Annotate_Movie	{
 		for (i = 0; i < nResults(); i++) {
 			arrowArray = makeArrowPositions(xCoords[i],yCoords[i],arrowSel,arrowOffset,arrowSize);
 		    makeArrow(arrowArray[0], arrowArray[1], arrowArray[2], arrowArray[3], "filled");
-			Roi.setPosition(0, 0, frameNumbers[i]);
-		    Overlay.addSelection();
-		    run("Select None");
+			if(Stack.isHyperstack == true) {
+				Roi.setPosition(0, 0, frameNumbers[i]);
+				Overlay.addSelection();
+		    	run("Select None");
+			} else {
+				Roi.setPosition(frameNumbers[i]);
+				Overlay.addSelection();
+		    	run("Select None");
+			}
 	}
+	close("Results");
 }
 
 function makeArrowPositions(xc, yc, radiansOfArrow, offPx, widthOfArrow)	{
