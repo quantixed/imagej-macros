@@ -51,7 +51,10 @@ macro "Blind Analysis" {
 		} else  {
 			setMetadata("Label", ""); // strips the label data from the image for blinding purposes
 		}
-		save(outputPathPerm);
+		if(!endsWith(outputPathPerm, ".tif")) {
+		  outputPathPerm = outputPathPerm + ".tif";
+		}
+		saveAs("TIFF",outputPathPerm);
 		print(f,imNames[i]+"\t"+imPermNames[i]);
 		close();
 	}

@@ -263,6 +263,10 @@ macro "Add ROI Zoom"	{
 
 	selectWindow(title);
 	run("Select None");
-	saveAs("TIFF", dir1+newName);
+  path = dir1 + newName;
+	if(!endsWith(path, ".tif")) {
+		path = path + ".tif";
+	}
+	saveAs("TIFF", path);
 	setBatchMode(false);
 }

@@ -227,7 +227,11 @@ function montageMaker(dir)	{
 	generateMontage(newName, vChoice, gVar, mVar, ww, hh, grout, res, sbchoice, sblen, mag, gNameArray, m1NameArray, m2NameArray);
 
 	//save montage
-	saveAs("TIFF", dir + newName);
+	path = dir + newName;
+	if(!endsWith(path, ".tif")) {
+		path = path + ".tif";
+	}
+	saveAs("TIFF", path);
 	setBatchMode(false);
 	// close originals
 	for (i = 0; i < imgArray.length; i ++)	{
@@ -356,7 +360,11 @@ function mtgcomp()	{
 	run("Set Scale...", "distance=res known=1 unit=inch");
 	run("Select None");
 	//save montage
-	saveAs("TIFF", dir1+newName);
+	path = dir1 + newName;
+	if(!endsWith(path, ".tif")) {
+		path = path + ".tif";
+	}
+	saveAs("TIFF", path);
 	setBatchMode(false);
 }
 

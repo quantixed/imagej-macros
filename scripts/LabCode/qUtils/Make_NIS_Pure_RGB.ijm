@@ -31,6 +31,10 @@ for (i=0; i< imgArray.length; i++) {
 			else
 				run("Grays");
 			}
-		saveAs("TIFF", dir1+win);
+			path = dir1 + win;
+			if(!endsWith(path, ".tif")) {
+				path = path + ".tif";
+			}
+			saveAs("TIFF", path);
 		close();
 	}

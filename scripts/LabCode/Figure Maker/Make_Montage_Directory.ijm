@@ -146,7 +146,7 @@ macro "Make Montages Directory" {
 		Dialog.addChoice("Ma2 Magenta", mArray);
 		Dialog.addChoice("Yw2 Yellow", mArray);
 	}
-  
+
 	Dialog.addNumber("Grout size (pixels):", 8);
 	Dialog.addNumber("dpi", 300);
 	Dialog.addCheckbox("Include scale bar?", false);
@@ -259,7 +259,10 @@ macro "Make Montages Directory" {
 			}
 			generateMontage(newName, vChoice, gVar, mVar, ww, hh, grout, res, sbchoice, sblen, mag, gWinArray, m1WinArray, m2WinArray);
 			// save montage
-			save(output);
+			if(!endsWith(output, ".tif")) {
+				output = output + ".tif";
+			}
+			saveAs("TIFF", output);
 			run("Close All");
 		}
 	}
