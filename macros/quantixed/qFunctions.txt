@@ -1,5 +1,7 @@
 //qFunctions
 function montageMaker(dir)	{
+	// get name of original image and use a modified form for save at the end
+	win = getTitle();
 	// check how many slices/channels
 	Stack.getDimensions(width, height, channels, slices, frames);
 	getPixelSize(unit, pixelWidth, pixelHeight);
@@ -216,8 +218,7 @@ function montageMaker(dir)	{
 	// decisions collected
 
 	// collect details from images
-	win = getTitle();
-	newName = "mtg" + safeName(win);
+	newName = "mtg_" + safeName(win);
 	if (mVar==0)	{
 		m1NameArray = newArray(0);
 		m2NameArray = newArray(0);
