@@ -263,10 +263,18 @@ macro "Add ROI Zoom"	{
 
 	selectWindow(title);
 	run("Select None");
-  path = dir1 + newName;
+  	path = dir1 + newName;
 	if(!endsWith(path, ".tif")) {
 		path = path + ".tif";
 	}
 	saveAs("TIFF", path);
+	// save a log file
+	path = substring(path,0,lengthOf(path) - 4) + ".txt";
+	f = File.open(path);
+		print(f, "ROI Zoom");
+		print(f, newName);
+		print(f, "Clicked box centre: " + xp + "," + yp);
+		print(f, "Box size: " + bSize + ". Expansion: " + expand + ". Stroke: " + bStroke + ". Corner: " + corner);
+	File.close(f);
 	setBatchMode(false);
 }

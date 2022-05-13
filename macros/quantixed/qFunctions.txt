@@ -366,6 +366,25 @@ function mtgcomp()	{
 		path = path + ".tif";
 	}
 	saveAs("TIFF", path);
+	// save a log file
+	path = substring(path,0,lengthOf(path) - 4) + ".txt";
+	f = File.open(path);
+		print(f, "MONTAGE COMPILER");
+		print(f, "Name of Montage:");
+		print(f, newName);
+		if(vChoice == true) {
+			print(f, "Montage of columns (left to right):");
+		} else{
+			print(f, "Montage of rows (top to bottom):");
+		}
+		for (i=0; i<len; i++)	 {
+			print(f, d2s(i+1,0) + " - " + nameArray[i]);
+		}
+		print(f, "Grout: " + grout);
+		if(sbchoice == true) {
+			print(f, "Scale bar: " + sblen + " um. Pixel size: " + mag);
+		}
+	File.close(f);
 	setBatchMode(false);
 }
 
