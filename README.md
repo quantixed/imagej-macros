@@ -183,3 +183,5 @@ macro "AutoRun" {
 ```
 
 If you can't bear to uninstall the third-party code (or don't know which update site causes the problem), just paste that code block into `StatupMacros.fiji.ijm` and things will start to work again.
+
+Note that usage of RGB images has a limitation of a filename length of 59 characters.
