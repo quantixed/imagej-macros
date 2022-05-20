@@ -6,9 +6,16 @@
  * 2020-07-20
  * @Author: Henrik Persson
  * Edits: quantixed 2022-03-26
+ * 
+ * Future dev idea: use foreground colour that specifically contrasts with the image
+ * Future dev idea: scale the image more intelligently
  */
 
 if (nImages < 1) exit ("One image is required.");
+
+//get original image name - we are working on the "top" image
+originalName = getTitle();
+if(bitDepth() != 24) exit ("Image must be RGB.");
 
 setBatchMode(true);
 
@@ -24,9 +31,6 @@ colorModes = newArray(
 		"Typical Monochromacy",
 		"Atypical Monochromacy"
 		);
-
-//get original image name
-originalName = getTitle();
 
 //create new stack to store treated images
 newImage("Colorblindness simulation", "RGB black", getWidth(), getHeight(), colorModes.length);
