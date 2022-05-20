@@ -79,7 +79,7 @@ Sometimes, we like to add a ROI and a zoomed version of this ROI to various pane
 
 You can pick which corner you want the zoom and which panels you'd like to add an ROI and zoom.
 
-After clicking OK, you are asked to select the centre of the ROI.
+After clicking OK, you are asked to select the *centre* of the ROI.
 
 ![fm008](img/screenshot08.png)
 
@@ -91,6 +91,8 @@ Note that this code will run on stacks as well so that you can add ROIs and zoom
 
 It only works on square images and montages made from squares. If your zooms are in the wrong place, check the size(s) of your input images.
 
+When the ROI-Zoom version is made, a text file is saved in the same directory as the resulting image. It contains useful information that you can use to recreate the image if you need to.
+
 #### Now put the rows together
 
 Finally, if we have more than one montage, we need to compile them together. Load in all the montages you'd like to compile. Now select *LabCode > Figure Maker > Montage Compiler*
@@ -99,13 +101,17 @@ The dialog asks you to select which montage you'd like where.
 
 The routine is intelligent enough to recognise vertical and horizontal montages and to compile them left-to-right or top-to-bottom as appropriate.
 
+Again, a text file is saved with the resulting compilation image so that you know which images went where.
+
 ![fm0010](img/screenshot10.png)
 
 Your compilation will save back in the same directory as the montages. Note that you can use this macro to make one compilation and then use it again to add more montages (extra rows) or other compilations. Very large compilation can be built this way.
 
 ![fm0011](img/screenshot11.png)
 
-Note that **results from Figure Maker are saved as 300 ppi TIFF** ready for use in Illustrator or equivalent software.
+Note that **results from Figure Maker are saved as a flat 300 ppi RGB TIFF** ready for use in Illustrator or equivalent software.
+
+Important note about scale bars. The code suggests a pixel size for use in the scale bar. If the scaling of your images is incorrect, then the scale bar will be the wrong size. **If the dialog box says 0.069, double-check your original image for scaling information**, 0.069 is the "pixel size" for a 300 ppi image, i.e. the scaling no longer relates to the original image. Bottom line is: **make sure you know the pixel size of your images before adding any scale bars.**
 
 #### Figures the quantixed way
 
@@ -121,6 +127,9 @@ For multichannel microscopy images, e.g. from an immunofluorescence experiment, 
 7. Grouting between conditions is 2 x grout between channels (suggested)
 8. Labelling is done in Illustrator or some other software to assemble the final figure, *not* in ImageJ
 
+### Figure Utilities
+
+Check whether your figure or image is colour blind safe using this simple utility `Check_Colour_blindess.ijm`.
 
 ### Blind Analysis
 
@@ -184,4 +193,4 @@ macro "AutoRun" {
 
 If you can't bear to uninstall the third-party code (or don't know which update site causes the problem), just paste that code block into `StatupMacros.fiji.ijm` and things will start to work again.
 
-Note that usage of RGB images has a limitation of a filename length of 59 characters.
+**Other notes** Note that usage of RGB images has a limitation of a filename length of 59 characters.
