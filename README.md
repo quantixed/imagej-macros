@@ -27,6 +27,8 @@ After installation, all macros can be found under the menu item called **LabCode
 
 There are macros to help you to make figures with montages - made the way we like them! There are other plugins for making figures in ImageJ but none did what we [wanted](#figures-the-quantixed-way), so we made our own.
 
+There is a video explaining how to use the Figure Maker [here](https://www.youtube.com/watch?v=6qORVjkCm90).
+
 
 #### Prepare your images
 
