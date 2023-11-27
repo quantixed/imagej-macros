@@ -2,7 +2,7 @@
  * This macro was originally contributed by Meghane Sittewelle
  * Allows user to save text file of time stamps for use in the main macro
  * 230714 - macro now works with files with multiple series
- * This change means that there is now a header in the text file to sepcify
+ * This change means that there is now a header in the text file to specify
  * Series, Z, C, T (all 0-index) and time (in units not specified).
  * To use the timestamps in the main macro a single column of times is required
  */
