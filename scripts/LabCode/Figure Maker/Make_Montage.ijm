@@ -12,8 +12,6 @@
  3. Specify the grouting of the montage (white space between panels)
  4. There's no outside border, and there is an option to add a scale bar (scaling taken from image)
  5. The idea is to compile them afterwards using Montage Compiler
-
- Batch processing of a directory TIFFs will be added shortly.
 */
 
 
@@ -28,5 +26,55 @@ macro "Make Montage" {
 	okVar = checkImageForMontage(win);
 	if (okVar == true) {
 		montageMaker(dir1);
+	} else if (okVar == false) {
+		rename("mmTemp");
+		if(qCheckForTempFiles(dir1) == true) {
+			exit("Temp files found in " + dir1 + ". Please delete them and try again.");
+		}
+		qSaveImageSequence(dir1);
+		montageMakerMulti(dir1, dir1, false, win);
 	}
+}
+
+function qCheckForTempFiles(dir) {
+	list = getFileList(dir);
+	tiffnum = 0;
+	for (i = 0; i < list.length; i ++) {
+		if (startsWith(list[i], "mmTemp") && endsWith(toLowerCase(list[i]), ".tif"))
+			tiffnum = tiffnum + 1;
+	}
+	if (tiffnum > 0) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+function qSaveImageSequence(dir) {
+	win = getTitle();
+	setBatchMode(true);
+
+	getDimensions(ww, hh, cc, ss, ff);
+	if(cc == 1) {
+		run("Image Sequence... ", "dir=" + dir + " format=TIFF start=0 digits=4");
+	} else {
+		if(ss > 1) {
+			for(i = 0; i < ss; i++) {
+				selectWindow(win);
+				run("Duplicate...", "duplicate slices=" + (i + 1));
+				saveAs("Tiff", dir + "mmTemp" + IJ.pad(i, 4) + ".tif");
+				close();
+			}
+		} else {
+			for(i = 0; i < ff; i++) {
+				selectWindow(win);
+				run("Duplicate...", "duplicate frames=" + (i + 1));
+				saveAs("Tiff", dir + "mmTemp" + IJ.pad(i, 4) + ".tif");
+				close();
+			}
+		}
+	}
+	selectWindow(win);
+	close();
+	setBatchMode(false);
 }

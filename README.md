@@ -71,7 +71,13 @@ Your montage is saved in the same directory as the original image. The macro lea
 
 #### Multiple montages
 
-If you want to make many montages. Then select *LabCode > Figure Maker > Make Montage Directory*. This macro allows the user to make montages from TIFFs in a directory. A dialog is shown at the start that allows the user to select which channels go where and then the montages are made in batch mode.
+If you want to make many montages, then select *LabCode > Figure Maker > Make Montage Directory*. This macro allows the user to make montages from all TIFFs in a directory. A dialog is shown at the start that allows the user to select which channels go where and then the montages are made in batch mode.
+
+#### Movie/Stack montages
+
+It is now possible to make a montage of movies or stacks. Select *LabCode > Figure Maker > Make Montage* and point the dialog at the file you'd like to montage.
+
+If the image is a movie, or a z-stack (but not both) comprising more than one channel, then you will be able to generate a movie/stack montage.
 
 #### Optional: add ROIs and zooms
 
