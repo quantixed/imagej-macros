@@ -101,6 +101,10 @@ It only works on square images and montages made from squares. If your zooms are
 
 When the ROI-Zoom version is made, a text file is saved in the same directory as the resulting image. It contains useful information that you can use to recreate the image if you need to.
 
+Alternatively, you might prefer to highlight the ROI but not insert the zoomed ROI.
+In this case, **Make ROI Zoom External** will allow you to save the zoomed ROI as a separate panel.
+If you'd like to place the zoomed ROI as a further panel, select 0 to zoom the ROI so that it is the same size as a regular panel; otherwise, pick the magnification you'd prefer.
+
 #### Now put the rows together
 
 Finally, if we have more than one montage, we need to compile them together. Load in all the montages you'd like to compile. Now select *LabCode > Figure Maker > Montage Compiler*
