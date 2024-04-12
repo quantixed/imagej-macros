@@ -30,18 +30,22 @@ macro "Make ROI Zoom External"	{
 		grout = 0;
 		nPanel = 1;
 		vChoice = "";
-	}
-	else if (w > h)	{
+	} else if (w > h)	{
 		nCol = floor(w/h);
 		nRow = 1;
 		grout = (w - (nCol * h)) / (nCol - 1);
+		if (nCol == 1)	{
+			grout = 0;
+		}
 		nPanel = nCol;
 		vChoice = "";
-	}
-	else {
+	} else {
 		nCol = 1;
 		nRow = floor(h/w);
 		grout = (h - (nRow * w)) / (nRow - 1);
+		if (nRow == 1)	{
+			grout = 0;
+		}
 		nPanel = nRow;
 		vChoice = "vert";
 	}
@@ -92,8 +96,7 @@ macro "Make ROI Zoom External"	{
 		// print("x="+xp+" y="+yp+" "+width+" "+height);
 		makeRectangle(xp-(bSize/2),yp-(bSize/2),bSize,bSize);
 		selectImage(imageID);
-	}
-	else	exit("Works with point selection only");
+	} else	exit("Works with point selection only");
 
 	// figure out which panel the selection is in
 	// each panel is h x h pixels separated by grout for horizontal
@@ -109,8 +112,7 @@ macro "Make ROI Zoom External"	{
 		// sanity check in case user has clicked too close to the edge
 		if (xp1-(bSize/2) < 0 || yp1-(bSize/2) < 0)	exit("Try again, too close to the edge");
 		if (xp1+(bSize/2) > w || yp1+(bSize/2) > w)	exit("Try again, too close to the edge");
-	}
-	else {
+	} else {
 		sp = floor(xp / h);
 		// x and y coords of ROI centre relative to the panel LT
 		xp1 = xp - (sp * (h + grout));
