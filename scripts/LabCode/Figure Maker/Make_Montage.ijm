@@ -28,11 +28,14 @@ macro "Make Montage" {
 		montageMaker(dir1);
 	} else if (okVar == false) {
 		rename("mmTemp");
-		if(qCheckForTempFiles(dir1) == true) {
-			exit("Temp files found in " + dir1 + ". Please delete them and try again.");
-		}
-		qSaveImageSequence(dir1);
-		montageMakerMulti(dir1, dir1, false, win);
+		dir = getDir("temp");
+		if (dir == "")
+      		exit("No temp directory available");
+		// check temporary directory for temporary montage files, delete if found
+		qCheckForTempFiles(dir);
+		// split out stack into separate files in temporary directory
+		qSaveImageSequence(dir);
+		montageMakerMulti(dir, dir1, false, win);
 	}
 }
 
@@ -40,13 +43,10 @@ function qCheckForTempFiles(dir) {
 	list = getFileList(dir);
 	tiffnum = 0;
 	for (i = 0; i < list.length; i ++) {
-		if (startsWith(list[i], "mmTemp") && endsWith(toLowerCase(list[i]), ".tif"))
+		if (startsWith(list[i], "mmTemp") && endsWith(toLowerCase(list[i]), ".tif")) {
 			tiffnum = tiffnum + 1;
-	}
-	if (tiffnum > 0) {
-		return true;
-	} else {
-		return false;
+			ok = File.delete(dir + list[i]);
+		}
 	}
 }
 

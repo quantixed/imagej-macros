@@ -242,7 +242,10 @@ function montageMaker(dir)	{
 }
 
 // this function will either make a montage from every tif in the source Directory
-// or it will make a stacked montage
+// or it will make a stacked montage. opt is boolean to select behaviour
+// dir1 is the input Directory
+// dir2 is the output Directory
+// origName is the originating filename, "none" if opt is true (not used)
 function montageMakerMulti(dir1, dir2, opt, origName)	{
 
 	list = getFileList(dir1);
@@ -519,10 +522,10 @@ function montageMakerMulti(dir1, dir2, opt, origName)	{
 		rename(newName);
 		// clean up
 		for (i = 0; i < tifflist.length; i ++) {
-			File.delete(dir1 + tifflist[i]);
+			ok = File.delete(dir1 + tifflist[i]);
 		}
 		for (i = 0; i < mtglist.length; i ++) {
-			File.delete(dir2 + mtglist[i]);
+			ok = File.delete(dir2 + mtglist[i]);
 		}
 		output = dir2 + newName;
 		// save montage
