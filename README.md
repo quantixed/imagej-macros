@@ -105,6 +105,19 @@ Alternatively, you might prefer to highlight the ROI but not insert the zoomed R
 In this case, **Make ROI Zoom External** will allow you to save the zoomed ROI as a separate panel.
 If you'd like to place the zoomed ROI as a further panel, select 0 to zoom the ROI so that it is the same size as a regular panel; otherwise, pick the magnification you'd prefer.
 
+#### Optional: invert panels or use non-standard LUTs
+
+The grayscale panels might look better inverted so that they are black-on-white, rather than white-on black.
+This can be helpful for dim or small features.
+To do this, open the montage that you would like to invert and select ***Invert Montage***.
+This will launch a dialog to help you to choose which panels you'd like to invert and whether you would like to outline the panels with a black border.
+It's best to do this after you have made the ROI zooms if you want to.
+There's also an "auto" mode, that will invert all panels except the right/bottom panel (contains the merge) to speed things up.
+
+If you'd like to switch an RGB merge panel for the OPF colour scheme, open the montages you'd like to change and select **Change Montage Merge**.
+This command simply switches Red-Orange, Green-Fresh and Blue-Purple for a slightly different look.
+To run this, you must have _NeuroCytoLUTs_ Update Site installed.
+
 #### Now put the rows together
 
 Finally, if we have more than one montage, we need to compile them together. Load in all the montages you'd like to compile. Now select *LabCode > Figure Maker > Montage Compiler*
@@ -154,7 +167,7 @@ This is a simple utility to save a version of the file you are viewing in Fiji/I
 
 ### Movie Annotation
 
-Two macros to:
+Two macros that will:
 
 1. Add arrows to movies to highlight and track an object of interest. Unlike other scripts out there, this one places an arrowhead in a fixed orientation/distance from the object and allows annotations in any frame (not _all_ frames).
 2. Irregular Time Stamps - adds timestamps to movies, formatting them in hh:mm or mm:ss. Unlike other versions, negative times are allowed and the time intervals do not have to be regular. Requires a new line separated text file of times.

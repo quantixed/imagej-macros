@@ -39,6 +39,8 @@ function autoInvertMontage() {
 		grout = 0;
 		nPanel = 1;
 		vChoice = "";
+		ww = w;
+		hh = h;
 	}
 	else if (w > h)	{
 		nCol = floor(w/h);
@@ -116,5 +118,4 @@ function autoInvertMontage() {
 	}
 	saveAs("TIFF", path);
 	close();
-	setBatchMode(false);
 }

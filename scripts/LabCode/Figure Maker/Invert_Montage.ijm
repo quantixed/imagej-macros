@@ -29,6 +29,8 @@ macro "Invert Montage Panels"	{
 		grout = 0;
 		nPanel = 1;
 		vChoice = "";
+		ww = w;
+		hh = h;
 	}
 	else if (w > h)	{
 		nCol = floor(w/h);
@@ -126,5 +128,4 @@ macro "Invert Montage Panels"	{
 	}
 	saveAs("TIFF", path);
 	close();
-	setBatchMode(false);
 }
