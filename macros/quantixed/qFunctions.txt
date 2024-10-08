@@ -800,3 +800,188 @@ function generateMontage(newName, vChoice, gVar, mVar, width, height, grout, res
 	run("Set Scale...", "distance=" + res + " known=1 unit=inch");
 	run("Select None");
 }
+
+// --------------------------------------------------------------------------------
+// Change Montage Merge Functions
+// --------------------------------------------------------------------------------
+
+function autoChangeMontage(lutstring) {
+// assumes merge is on the right/bottom and therefore not inverted
+	lutarray = makeLutArray(lutstring);
+	custarray = makeCustArray(lutstring);
+	lutdir = getDirectory("luts");
+	title = getTitle();
+	dir1 = getDirectory("image");
+	newName = "RGB2" + lutstring + "_" + title;
+	run("Select None");
+	getDimensions(w, h, c, numSlices, nFrames);
+	// deal with multiple frames or slices
+	nShots = maxOf(numSlices,nFrames);
+	if (numSlices > 1 && nFrames > 1) exit("Number of slices and frames is greater than one");
+	if (numSlices == 1) sliceOrFrame = 0;
+	if (numSlices > 1) sliceOrFrame = 1;
+	if (nFrames > 1) sliceOrFrame = 2;
+
+	// work out grout size
+	if (w == h) {
+		nCol = 1;
+		nRow = 1;
+		grout = 0;
+		nPanel = 1;
+		vChoice = "";
+		ww = w;
+		hh = h;
+	}
+	else if (w > h)	{
+		nCol = floor(w/h);
+		nRow = 1;
+		grout = (w - (nCol * h)) / (nCol - 1);
+		nPanel = nCol;
+		vChoice = "";
+		ww = h;
+		hh = h;
+	}
+	else {
+		nCol = 1;
+		nRow = floor(h/w);
+		grout = (h - (nRow * w)) / (nRow - 1);
+		nPanel = nRow;
+		vChoice = "vert";
+		ww = w;
+		hh = w;
+	}
+
+	// collect decisions
+	panelDecisions = newArray(nPanel);
+	for (i=0; i<nPanel; i++)	{
+		panelDecisions[i] = false;
+	}
+	panelDecisions[nPanel - 1] = true;
+
+	for (i=0; i<nPanel; i++)	{
+		if (panelDecisions[i] == 1)	{
+			run("Select None");
+			// top left of panel is
+			if (vChoice == "vert") {
+				xq = 0 + 0; // --for future dev
+				yq = 0 + (i * (hh + grout));
+			} else {
+				xq = 0 + (i * (ww + grout));
+				yq = 0 + 0; // --for future dev
+			}
+			for (j=0; j<nShots; j++)	{
+				if (sliceOrFrame == 1)
+					Stack.setSlice(j+1);
+				else if (sliceOrFrame == 2)
+					Stack.setFrame(j+1);
+				makeRectangle(xq,yq,ww,hh);
+				// run routine here ----
+				run("Copy");
+				newImage("tmpMrg", "RGB", ww, hh, 1);
+				run("Paste");
+				run("Make Composite");
+				run("16-bit");
+				for (k=0; k<3; k++) {
+					Stack.setChannel(k+1);
+					if(custarray[k] == 1) {
+						lut = lutdir + lutarray[k];
+						open(lut);
+					} else {
+						run(lutarray[k]);
+					}
+				}
+				run("RGB Color");
+				selectWindow("tmpMrg (RGB)");
+				run("Select All");
+				run("Copy");
+				selectWindow(title);
+				run("Paste");
+				// end routine ----
+				run("Select None");
+				// close temp windows
+				selectWindow("tmpMrg");
+				close();
+				selectWindow("tmpMrg (RGB)");
+				close();
+			}
+		}
+	}
+
+	selectWindow(title);
+	run("Select None");
+	path = dir1 + newName;
+	if(!endsWith(path, ".tif")) {
+		path = path + ".tif";
+	}
+	saveAs("TIFF", path);
+	close();
+}
+
+function lutCheck() {
+	check = true;
+	lutdir = getDirectory("luts");
+	path = lutdir + "CRL_OPF orange.lut";
+	if(!File.exists(path)) check = false;
+	path = lutdir + "CRL_OPF fresh.lut";
+	if(!File.exists(path)) check = false;
+	path = lutdir + "CRL_OPF purple.lut";
+	if(!File.exists(path)) check = false;
+	return check;
+}
+
+function makeLutArray(s) {
+	// string should be any of the following letters
+	s = toUpperCase(s);
+	// R, G, B, M, Y, C, W, O, F, P
+	// R = Red, G = Green, B = Blue
+	// M = Magenta, Y = Yellow, C = Cyan
+	// W = Grays
+	// O = Orange, F = Fresh, P = Purple
+	lutarray = newArray(3);
+	for (i=0; i<3; i++) {
+		t = substring(s, i, i+1);
+		if (t == "R") {
+			lutarray[i] = "Red";
+		} else if (t == "G") {
+			lutarray[i] = "Green";
+		} else if (t == "B") {
+			lutarray[i] = "Blue";
+		} else if (t == "M") {
+			lutarray[i] = "Magenta";
+		} else if (t == "Y") {
+			lutarray[i] = "Yellow";
+		} else if (t == "C") {
+			lutarray[i] = "Cyan";
+		} else if (t == "W") {
+			lutarray[i] = "Grays";
+		} else if (t == "O") {
+			lutarray[i] = "CRL_OPF orange.lut";
+		} else if (t == "F") {
+			lutarray[i] = "CRL_OPF fresh.lut";
+		} else if (t == "P") {
+			lutarray[i] = "CRL_OPF purple.lut";
+		} else {
+			 exit ("Unknown LUT specification: " + t);
+		}
+	}
+	
+	return lutarray;
+}
+
+function makeCustArray(s) {
+	// string should be any of the following letters
+	s = toUpperCase(s);
+	// R, G, B, M, Y, C, W (normal)
+	// O = Orange, F = Fresh, P = Purple (custom)
+	custarray = newArray(3);
+	for (i=0; i<3; i++) {
+		t = substring(s, i, i+1);
+		if (t == "R" || t == "G" || t == "B" || t == "M" || t == "Y" || t == "C" || t == "W") {
+			custarray[i] = 0;
+		} else {
+			custarray[i] = 1;
+		}
+	}
+	
+	return custarray;
+}
