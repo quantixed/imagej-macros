@@ -19,8 +19,7 @@ After installation, all macros can be found under the menu item called **LabCode
 2. [Blind Analysis](#blind-analysis)
 3. [ELN Saver](#eln-saver)
 4. [Other Utilities](#other-utilities)
-5. [Misc Macros](#misc-macros)
-6. [I'm getting errors](#troubleshooting)
+5. [I'm getting errors](#troubleshooting)
 
 
 ### Figure Maker
@@ -114,9 +113,13 @@ This will launch a dialog to help you to choose which panels you'd like to inver
 It's best to do this after you have made the ROI zooms if you want to.
 There's also an "auto" mode, that will invert all panels except the right/bottom panel (contains the merge) to speed things up.
 
-If you'd like to switch an RGB merge panel for the OPF colour scheme, open the montages you'd like to change and select **Change Montage Merge**.
-This command simply switches Red-Orange, Green-Fresh and Blue-Purple for a slightly different look.
-To run this, you must have _NeuroCytoLUTs_ Update Site installed.
+If you'd like to switch an RGB merge panel for the a different colour scheme, open the montages you'd like to change and select **Change Montage Merge**.
+There are some options to switch RGB to OFP (Orange-Fresh-Purple) or to MGB (Magenta-Green-Blue).
+It is possible to specify any combination of RGB, CMY, W(hite) or OFP.
+Just select the "Whatever" option and type in your desired combination to map RGB to.
+This will work on all open images so it is very simple to transform a whole bunch of montages in the same way.
+It does not work on compiled montages.
+Note: to run this, you must have _NeuroCytoLUTs_ Update Site installed.
 
 #### Now put the rows together
 
@@ -183,12 +186,6 @@ We've had problems with nd2 files being saved with a LUT that is not pure red, p
 Open all the nd2 files in a directory and save them as TIFF to another directory with `nd2SaveAsTiff.ijm`.
 
 Maybe you like to open a whole directory of images, look through them, closing the bad ones and leaving the good ones open. Perhaps you want to grab the list of good images so that you can come back to it later? Well, `PrintTitlesOfNiceImages.ijm` does this for you.
-
---
-
-### Misc Macros
-
-Other macros that we use - but are not included in the update site - are found in the `misc` directory.
 
 --
 
