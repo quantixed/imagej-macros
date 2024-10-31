@@ -16,6 +16,7 @@ After installation, all macros can be found under the menu item called **LabCode
 	3. Optional: add [ROI Zoom](#roi-zoom)
 	4. [Compile](#put-the-rows-together) your montages
 	5. [Figures the quantixed way](#figures-the-quantixed-way)
+	6. Typical figure [workflows](#workflows) - overview
 2. [Blind Analysis](#blind-analysis)
 3. [ELN Saver](#eln-saver)
 4. [Other Utilities](#other-utilities)
@@ -149,11 +150,40 @@ For multichannel microscopy images, e.g. from an immunofluorescence experiment, 
 2. In a row montage the merge is on the right. In a column montage it is at the bottom
 3. Square images, square ROIs and square zooms
 4. No border
-5. Scale bar in the bottom right corner
+5. Scale bar in the bottom right corner (added to the compiled montage)
 4. Fixed grout of 8 pixels (suggested)
 6. Scale bar of 10 µm, height of 2 x grout (suggested)
 7. Grouting between conditions is 2 x grout between channels (suggested)
 8. Labelling is done in Illustrator or some other software to assemble the final figure, *not* in ImageJ
+
+#### Workflows
+
+The basic workflow is to go:
+
+```
+    IMAGE(S)
+       |
+       | (Montage Maker or Montage Maker Directory)
+       v
+   MONTAGE(S)
+       |
+       | (Montage Compiler)
+       v
+COMPILED MONTAGE
+```
+Images can be XYC, XYCT or XYCZ. The Montage is save as RGB and will be XY, XYT or XYZ, respectively.
+
+Montages can be modified in the following ways:
+
+- ROI zoom or ROI zoom external - can be 1 or more times
+- Inverted
+- Change colors
+
+These steps can be run iteratively, e.g. ROI zooms twice, then invert, then change colors.
+Montages and modified montages can be compiled together as long as the dimensions are compatible.
+
+ROI Zoom macros and Compile Montage require images open to work with, the other macros typically do not allow open images, and you need to find the source image upon running.
+
 
 ### Figure Utilities
 
@@ -216,3 +246,12 @@ macro "AutoRun" {
 If you can't bear to uninstall the third-party code (or don't know which update site causes the problem), just paste that code block into `StatupMacros.fiji.ijm` and things will start to work again.
 
 **Other notes** Note that usage of RGB images has a limitation of a filename length of 59 characters.
+
+**The grout looks really tiny and the scale bar is very thin** The suggested grout sizes work well for 400x400 images.
+If you have 1000x1000 images the suggested grouts will look thin when imported into a figure, adjust accordingly.
+As a guide, a 600x600 image that has two panels and one merge with a grout of 8 pixels will be 1816 pixels wide.
+At 300 dpi this is a final size of 155 mm.
+A full size figure is usually 170 mm, so the figure will be ~91% of the full width of the figure.
+If you shrink it to half size, now the grout will be 4 pixels or 0.34 mm which will look quite thin.
+A rule of thumb is grout should be 1/50th of the image width, but ultimately, test it out!
+
