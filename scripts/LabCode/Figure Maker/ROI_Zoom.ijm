@@ -19,6 +19,8 @@ macro "Add ROI Zoom"	{
 	newName = "zooms_" + title;
 	run("Select None");
 	getDimensions(w, h, c, numSlices, nFrames);
+	// code doesn't work as intended with muli-channel images
+	if (c > 1) exit("Image must be RGB or single channel");
 	// deal with multiple frames or slices
 	nShots = maxOf(numSlices,nFrames);
 	if (numSlices > 1 && nFrames > 1) exit("Number of slices and frames is greater than one");
@@ -98,7 +100,7 @@ macro "Add ROI Zoom"	{
 
 	// User defines the centre of the box for expansion
 	setTool(7); // not sure how to force single point vs multi-point
-	waitForUser("Define box", "Click on image to centre of box for expansion");
+	waitForUser("Define box", "Click on the image to centre the box for expansion.\n\nTo change position, either drag the point,\nor click again and last point will be used");
 	if (selectionType == 10)	{
 		getBoundingRect(xp, yp, width, height);
 		// print("x="+xp+" y="+yp+" "+width+" "+height);
