@@ -63,7 +63,7 @@ macro "Make ROI Zoom External"	{
 	Dialog.create("Specify ROI Zoom");
 	Dialog.addMessage("What size box for expansion?");
 	Dialog.addNumber("Box size (px)", 50);
-    Dialog.addMessage("Expansion factor.\nEnter 0 for zooms to be the same size a panel.");
+    Dialog.addMessage("Expansion factor.\nEnter 0 for zooms to be the same size as a panel.");
 	Dialog.addNumber("Expansion e.g. 2 for 2X", 0);
     // setting border to 4 px because 1 pt is 1/72 inch
 	// at 300 ppi, this would be 300/72 = 4.167 px
@@ -85,6 +85,9 @@ macro "Make ROI Zoom External"	{
 	dSize = bSize * expand;
     if(dSize == 0) {
         dSize = h;
+		if (vChoice == "vert") {
+			dSize = w;
+		}
     }
 	// sanity check in case box is bigger than panel
 	if ((bSize > h) && lengthOf(vChoice) == 0)	exit("Box will be too big, use different expansion");
@@ -134,6 +137,7 @@ macro "Make ROI Zoom External"	{
 		setColor(getValue("color.foreground"));
 	}
 
+	filestr = "";
 	// do the copy/pasting
 	for (i=0; i<nPanel; i++)	{
 		selectWindow(title);
@@ -158,6 +162,7 @@ macro "Make ROI Zoom External"	{
 			run("Size...", cmd);
 			run("Select All");
 			run("Copy");
+			run("Select None");
             // save the image
             path = dir1 + "zPanel" + (i + 1) + "_" + newName;
 	        if(!endsWith(path, ".tif")) {
@@ -165,6 +170,7 @@ macro "Make ROI Zoom External"	{
 	        }
             saveAs("TIFF", path);
             close();
+			filestr = filestr + path + "\n";
 		}
 	}
 
@@ -179,10 +185,11 @@ macro "Make ROI Zoom External"	{
 	// save a log file
 	path = substring(path,0,lengthOf(path) - 4) + ".txt";
 	f = File.open(path);
-		print(f, "ROI Zoom");
+		print(f, "ROI Zoom External");
 		print(f, newName);
 		print(f, "Clicked box centre: " + xp + "," + yp);
 		print(f, "Box size: " + bSize + ". Expansion: " + expand + ". Stroke: " + bStroke + ".");
+		print(f, filestr);
 	File.close(f);
 	setBatchMode(false);
 }
