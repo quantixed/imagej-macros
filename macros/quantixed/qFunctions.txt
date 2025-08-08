@@ -985,3 +985,9 @@ function makeCustArray(s) {
 	
 	return custarray;
 }
+
+function correctDirEnding(s) {
+	if(endsWith(s, "/")) input = substring(s, 0, (lengthOf(s)-1));
+	if(!endsWith(s, "/") | !endsWith(s,"\\")) s = s + File.separator;
+	return s;
+}
