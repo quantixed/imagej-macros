@@ -55,7 +55,7 @@ macro "Add ROI Zoom"	{
 		vChoice = "vert";
 	}
 	// ask what size ROI and expansion and corner
-	cornerArray = newArray("LT", "RT", "LB", "RB");
+	cornerArray = newArray("LB", "LT", "RB", "RT");
 	labels = newArray(nPanel);
 		defaults = newArray(nPanel);
 		panelDecisions = newArray(nPanel);
@@ -63,6 +63,13 @@ macro "Add ROI Zoom"	{
 			labels[i] = "Panel "+i+1;
 			defaults[i] = true;
 		}
+	// setting default border stroke to 4 px because 1 pt is 1/72 inch
+	// at 300 ppi, this would be 300/72 = 4.167 px
+	bStroke = 4;
+	// but if grout is smaller, set to half grout instead but ensure it is an even integer
+	if (grout > 0) bStroke = grout / 2;
+	if (bStroke % 2 != 0) bStroke = bStroke - 1;
+	if (bStroke < 2) bStroke = 2;
 	// Make dialog box
 	Dialog.create("Specify ROI Zoom");
 	Dialog.addMessage("Select corner for zoom");
@@ -70,9 +77,7 @@ macro "Add ROI Zoom"	{
 	Dialog.addMessage("What size box for expansion?");
 	Dialog.addNumber("Box size (px)", 50);
 	Dialog.addNumber("Expansion e.g. 2X", 2);
-	// setting border to 4 px because 1 pt is 1/72 inch
-	// at 300 ppi, this would be 300/72 = 4.167 px
-	Dialog.addNumber("Border for boxes (px)", 4);
+	Dialog.addNumber("Border for boxes (px)", bStroke);
 	Dialog.addCheckbox("White border?", true);
 	Dialog.addMessage("Make boxes and zooms in panels...");
 	Dialog.addCheckboxGroup(1,nPanel,labels,defaults);
@@ -99,14 +104,20 @@ macro "Add ROI Zoom"	{
 	if (bStroke > 20 * grout && grout > 0)	exit("Use a smaller stroke size");
 
 	// User defines the centre of the box for expansion
+	// this is still useful because a user can pinpoint where they want the zoom
 	setTool(7); // not sure how to force single point vs multi-point
-	waitForUser("Define box", "Click on the image to centre the box for expansion.\n\nTo change position, either drag the point,\nor click again and last point will be used");
+	waitForUser("Define box", "Click on the image to centre the box for expansion.\n\nTo change position, drag the point.");
 	if (selectionType == 10)	{
-		getBoundingRect(xp, yp, width, height);
-		// print("x="+xp+" y="+yp+" "+width+" "+height);
-		makeRectangle(xp-(bSize/2),yp-(bSize/2),bSize,bSize);
-		selectImage(imageID);
+		Roi.getCoordinates(xa,ya);
 	} else	exit("Works with point selection only");
+	xp = xa[0];
+	yp = ya[0];
+	// we use the first point if multiple points are selected
+	makeRectangle(xp-(bSize/2),yp-(bSize/2),bSize,bSize);
+	setTool(0);
+	waitForUser("Box position OK?", "Click-and-hold inside the box to drag it until you are happy,\nClick OK when you're finished.");
+	getSelectionBounds(x,y,width,height);
+	if (width != height || width != bSize) exit("A single square ROI of " + bSize + " x " + bSize + " pixels is required");
 
 	// figure out which panel the selection is in
 	// each panel is h x h pixels separated by grout for horizontal

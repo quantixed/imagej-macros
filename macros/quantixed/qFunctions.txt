@@ -572,6 +572,13 @@ function mtgcomp()	{
 	res = 300;
 	sblen = 10;
 	mag = 0.069;
+	// estimate grout
+	if(vChoice) {
+		estgrout = groutEstimator(theHeight,theWidth);
+	} else {
+		estgrout = groutEstimator(theWidth,theHeight);
+	}
+	if (estgrout > 0) grout = estgrout * 2;
 	// Make dialog box
 	Dialog.create("Compile the montages");
 	// variations based on number of files
@@ -585,11 +592,11 @@ function mtgcomp()	{
 		labStr = d2s(i+1,0);
 		Dialog.addChoice(labStr, rowArray);
 	}
-	Dialog.addNumber("Row gap (px, default = 2 x grout):", 16);
-	Dialog.addNumber("dpi", 300);
+	Dialog.addNumber("Row gap (px, default = 2 x grout):", grout);
+	Dialog.addNumber("dpi", res);
 	Dialog.addCheckbox("Include scale bar?", false);
-	Dialog.addNumber("Scale bar size (µm):", 10);
-	Dialog.addNumber("Scaling, 1 px is how many µm?", 0.069);
+	Dialog.addNumber("Scale bar size (µm):", sblen);
+	Dialog.addNumber("Scaling, 1 px is how many µm?", mag);
 	Dialog.addCheckbox("Force other orientation:", false);
 	Dialog.show();
 	// variations based on number of files
@@ -699,7 +706,7 @@ function safeName(s)	{
 function checkImageForMontage(name)	{
 	selectWindow(name);
 	checker = false;
-	// determine what we are dealing width
+	// determine what we are dealing with
 	getDimensions(ww, hh, cc, ss, ff);
 	// warn if image is not square
 	if (ww != hh) print("Input image is not square");
@@ -710,10 +717,14 @@ function checkImageForMontage(name)	{
 		if (ss > 1 && ff > 1) exit ("Reduce dimensions before making montage");
 		if (cc > 1 && ss * ff == 1) checker = true;
 		// if cc is 1 or more AND either ss or ff is > 1; checker stays false
-	} else if (bitDepth() == 24 && ss * ff == 1)	{
-		run("Split Channels");
-		run("Images to Stack");
-		checker = true;
+	} else if (bitDepth() == 24) {
+		// it is possible to have an RGB hyperstack, so the only acceptable
+		// form for a montage is a single RGB image
+		if (cc * ss * ff == 1) {
+			run("Split Channels");
+			run("Images to Stack");
+			checker = true;
+		}
 	} else exit ("Input image does not meet requirements for montage");
 	return checker;
 }
@@ -799,6 +810,18 @@ function generateMontage(newName, vChoice, gVar, mVar, width, height, grout, res
 	// specify dpi default is 300 dpi
 	run("Set Scale...", "distance=" + res + " known=1 unit=inch");
 	run("Select None");
+}
+
+function groutEstimator(ww,hh) {
+	// we assume that montage is 1 panel high (hh) and that panel is square (ww == hh)
+	// if is a vertical montage, width and height are swapped before as parameters
+	// grout is unlikely to be more than half a panel width
+	estNPanel = floor(ww / hh);
+	estW = hh;
+	totalGrout = ww - (estW * estNPanel);
+	grout = totalGrout / (estNPanel - 1);
+	if(estNPanel <= 1) return 0;
+	return grout;
 }
 
 // --------------------------------------------------------------------------------
