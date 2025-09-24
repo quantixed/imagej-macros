@@ -117,6 +117,9 @@ macro "Add ROI Zoom"	{
 	setTool(0);
 	waitForUser("Box position OK?", "Click-and-hold inside the box to drag it until you are happy,\nClick OK when you're finished.");
 	getSelectionBounds(x,y,width,height);
+	xp = x + (width / 2);
+	yp = y + (height / 2);
+	// sanity check that box is correct size
 	if (width != height || width != bSize) exit("A single square ROI of " + bSize + " x " + bSize + " pixels is required");
 
 	// figure out which panel the selection is in

@@ -111,6 +111,9 @@ macro "Make ROI Zoom External"	{
 	makeRectangle(xp-(bSize/2),yp-(bSize/2),bSize,bSize);
 	setTool(0);
 	waitForUser("Box position OK?", "Click-and-hold inside the box to drag it until you are happy,\nClick OK when you're finished.");
+	xp = x + (width / 2);
+	yp = y + (height / 2);
+	// sanity check that box is correct size
 	getSelectionBounds(x,y,width,height);
 	if (width != height || width != bSize) exit("A single square ROI of " + bSize + " x " + bSize + " pixels is required");
 

@@ -2,7 +2,7 @@
  * The purpose of this script is to check whether the grout size will be visible in the final figure
  * It uses values provided by the user. Typically, the grout in a montage will be x pixels, then a
  * compiled montage uses spacing of 2x pixels. The scale bar is drawn at a height of x pixels in a
- * single montage or at 2x pixels in a compiled montage. ROI zooms are usually at x pixels.
+ * single montage or at 2x pixels in a compiled montage. ROI zooms are outlined at x/2 pixels.
  * Figure width refers to the size of the figure on the page.
  * Montage refers to an array of image panels which will occupy a part of the Figure.
  * Panel refers to a sub-part of the montage not a part of the Figure.
