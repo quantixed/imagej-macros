@@ -91,7 +91,8 @@ After clicking OK, you are asked to select the *centre* of the ROI.
 
 ![fm008](img/screenshot08.png)
 
-The resulting image is saved in the same directory as the montage.
+You are first shown a box where the ROI will be. It's possible to move its position if it's not quite right.
+Once you click OK, the resulting image is saved in the same directory as the montage.
 
 ![fm009](img/screenshot09.png)
 
@@ -100,10 +101,13 @@ Note that this code will run on stacks as well so that you can add ROIs and zoom
 It only works on square images and montages made from squares. If your zooms are in the wrong place, check the size(s) of your input images.
 
 When the ROI-Zoom version is made, a text file is saved in the same directory as the resulting image. It contains useful information that you can use to recreate the image if you need to.
+To recreate an ROI-Zoom version, open the montage and select **ROI Zoom Auto**.
+Here you will be asked for the usual details as wel as the coordinates that were saved in the text file.
 
 Alternatively, you might prefer to highlight the ROI but not insert the zoomed ROI.
 In this case, **Make ROI Zoom External** will allow you to save the zoomed ROI as a separate panel.
 If you'd like to place the zoomed ROI as a further panel, select 0 to zoom the ROI so that it is the same size as a regular panel; otherwise, pick the magnification you'd prefer.
+The separate ROI zoom image can be used in cases where you need to show the zoom alongside the montage rather than as an inset.
 
 #### Optional: invert panels or use non-standard LUTs
 
