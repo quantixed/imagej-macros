@@ -42,9 +42,10 @@ function processFile(input, output, file) {
 	run("Bio-Formats Importer", s);
 
 	// input maybe the parent directory or a subdirectory
-	// destination may not have the necessary subdirectories
+	// destination may not have the necessary subdirectory
 	outpath = replace(input, correctDirEnding(in), output);
-	if(!File.exists(outpath)) File.makeDirectory(outpath);
+
+	if(!File.exists(outpath)) makeDirectoryTree(outpath);
 
 	if (mp) {
 		while (nImages > 0) {
@@ -63,3 +64,4 @@ function processFile(input, output, file) {
 		close();
 	}
 }
+

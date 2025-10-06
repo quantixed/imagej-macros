@@ -1014,3 +1014,18 @@ function correctDirEnding(s) {
 	if(!endsWith(s, "/") | !endsWith(s,"\\")) s = s + File.separator;
 	return s;
 }
+
+// function to create directory tree recursively
+function makeDirectoryTree(path) {
+	path = correctDirEnding(path);
+	if (File.exists(path)) return;
+	
+	// find parent directory
+	parent = File.getParent(path);
+	if (!File.exists(parent)) {
+		makeDirectoryTree(parent);
+	}
+	
+	// create this directory
+	File.makeDirectory(path);
+}
