@@ -104,7 +104,8 @@ macro "Auto Add ROI Zoom"	{
 	// entered a silly number
 	if (bStroke > 20 * grout && grout > 0)	exit("Use a smaller stroke size");
 
-	// make box
+	// make box in the original top window at the user-defined position
+	selectWindow(title);
 	makeRectangle(xp-(bSize/2),yp-(bSize/2),bSize,bSize);
 	getSelectionBounds(x,y,width,height);
 	// sanity check that box is correct size

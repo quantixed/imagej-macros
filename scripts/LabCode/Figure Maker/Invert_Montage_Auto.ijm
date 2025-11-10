@@ -117,5 +117,4 @@ function autoInvertMontage() {
 		path = path + ".tif";
 	}
 	saveAs("TIFF", path);
-	close();
 }

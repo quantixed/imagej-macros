@@ -127,5 +127,4 @@ macro "Invert Montage Panels"	{
 		path = path + ".tif";
 	}
 	saveAs("TIFF", path);
-	close();
 }

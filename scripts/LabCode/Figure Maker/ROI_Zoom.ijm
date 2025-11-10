@@ -10,8 +10,7 @@
  */
 
 macro "Add ROI Zoom"	{
-	if (nImages > 1) exit ("Use a single image or single montage");
-	if (nImages == 0)	exit("No image open");
+	if (nImages == 0)	exit("No image(s) open");
 
 	imageID = getImageID();
 	title = getTitle();
@@ -105,6 +104,7 @@ macro "Add ROI Zoom"	{
 
 	// User defines the centre of the box for expansion
 	// this is still useful because a user can pinpoint where they want the zoom
+	selectWindow(title);
 	setTool(7); // not sure how to force single point vs multi-point
 	waitForUser("Define box", "Click on the image to centre the box for expansion.\n\nTo change position, drag the point.");
 	if (selectionType == 10)	{
@@ -113,6 +113,7 @@ macro "Add ROI Zoom"	{
 	xp = xa[0];
 	yp = ya[0];
 	// we use the first point if multiple points are selected
+	selectWindow(title);
 	makeRectangle(xp-(bSize/2),yp-(bSize/2),bSize,bSize);
 	setTool(0);
 	waitForUser("Box position OK?", "Click-and-hold inside the box to drag it until you are happy,\nClick OK when you're finished.");

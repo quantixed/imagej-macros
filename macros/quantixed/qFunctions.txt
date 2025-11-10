@@ -700,6 +700,7 @@ function safeName(s)	{
 	s = replace(s,"\\)","");
 	s = replace(s,".tif","");
 	s = replace(s," ","_");
+
 	return s;
 }
 
@@ -726,6 +727,7 @@ function checkImageForMontage(name)	{
 			checker = true;
 		}
 	} else exit ("Input image does not meet requirements for montage");
+	
 	return checker;
 }
 
@@ -937,7 +939,6 @@ function autoChangeMontage(lutstring) {
 		path = path + ".tif";
 	}
 	saveAs("TIFF", path);
-	close();
 }
 
 function lutCheck() {
