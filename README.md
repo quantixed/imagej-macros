@@ -1,5 +1,7 @@
 # imagej-macros
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18172496.svg)](https://doi.org/10.5281/zenodo.18172496)
+
 Tools for Fiji/ImageJ that we use in the lab for making figures etc.
 
 ## Instructions
