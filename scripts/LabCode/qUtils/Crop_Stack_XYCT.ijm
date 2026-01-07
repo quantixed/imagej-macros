@@ -1,11 +1,11 @@
 /*
- * Script to make a rectangular crop and crop in space (slices) and time (frames)
+ * Script to make a rectangular crop and/or crop in space (slices) and/or time (frames)
  * Options:
  * 	recurse the directory or to stay in the top directory
- * 	overwrite the data or not
  */
 
-#@ File (label = "Input directory", style = "directory") input
+#@ File (label = "Input directory", style = "directory") in
+#@ File (label = "Output directory", style = "directory") out
 #@ String (label = "File suffix", value = ".tif") suffix
 #@ String (visibility=MESSAGE, value="Specify crop:\nUse -1 for no box", required=false) msg1
 #@ Integer (label = "Box width (px)", value = 50) xsize
@@ -20,41 +20,34 @@
 #@ Integer (label = "Starting frame", value = 1) tstart
 #@ Integer (label = "Ending frame", value = 30) tstop
 #@ Boolean (label = "Recursive?", value = true, persist = false) recur
-#@ Boolean (label = "Overwrite data?", value = false, persist = false) overwrite
 
 // script starts here
+
+inputlocal = correctDirEnding(in);
+outputlocal = correctDirEnding(out);
+if (inputlocal == outputlocal) {
+	waitForUser("Input and Output directories are the same.\nImages will be OVERWRITTEN\nContinue?");
+}
+
 setBatchMode(true);
-
-processFolder(input);
-
+processFolder(inputlocal);
 setBatchMode(false);
 
 // function to scan folders/subfolders/files to find files with correct suffix
 function processFolder(input) {
-	if(endsWith(input, "/")) input = substring(input, 0, (lengthOf(input)-1));
-	if(!endsWith(input, "/") || !endsWith(input,"\\")) input = input + File.separator;
+	input = correctDirEnding(input);
+	output = correctDirEnding(out);
 	list = getFileList(input);
 	list = Array.sort(list);
 	for (i = 0; i < list.length; i++) {
 		if(File.isDirectory(input + list[i]) && recur == true)
 			processFolder(input + list[i]);
 		if(endsWith(list[i], suffix))
-			processFile(input, list[i]);
+			processFile(input, output, list[i]);
 	}
 }
 
-function processTopFolder(input) {
-	if(endsWith(input, "/")) input = substring(input, 0, (lengthOf(input)-1));
-	if(!endsWith(input, "/") || !endsWith(input,"\\")) input = input + File.separator;
-	list = getFileList(input);
-	list = Array.sort(list);
-	for (i = 0; i < list.length; i++) {
-		if(endsWith(list[i], suffix))
-			processFile(input, list[i]);
-	}
-}
-
-function processFile(input, file) {
+function processFile(input, output, file) {
 	open(input + file);
 	run("Select None");
 	getDimensions(width, height, channels, slices, frames);
@@ -69,6 +62,11 @@ function processFile(input, file) {
 		tstart = tstop;
 		tstop = temp;
 	}
+	if (tstart > frames || tstop > frames) {
+		print("Skipping. Requested frames are outside the range in the file");
+		close("*");
+		return 0;
+	}
 	
 	// if all slices are to be kept
 	if (zstart < 0 || zstop < 0) {
@@ -78,7 +76,12 @@ function processFile(input, file) {
 		// in case user has put these in the wrong way around
 		temp = zstart;
 		zstart = zstop;
-		zstop = zemp;
+		zstop = temp;
+	}
+	if (zstart > slices || zstop > slices) {
+		print("Skipping. Requested slices are outside the range in the file");
+		close("*");
+		return 0;
 	}
 	
 	// select box
@@ -102,13 +105,13 @@ function processFile(input, file) {
 	
 	run("Duplicate...", "title=test duplicate slices=" + zstart + "-" + zstop + " frames=" + tstart + "-" + tstop);
 	
-	if (overwrite == true) {
-		save(input + file);
-	} else {
-		copyname = replace(file, suffix, "_crop" + suffix);
-		save(input + copyname);
-	}
+	// input maybe the parent directory or a subdirectory
+	// destination may not have the necessary subdirectory
+	outpath = replace(input, correctDirEnding(in), output);
+
+	if(!File.exists(outpath)) makeDirectoryTree(outpath);
+
+	save(outpath + file);
 	
-	close();
-	close();
+	close("*");
 }
