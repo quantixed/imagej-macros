@@ -30,8 +30,18 @@ After installation, all macros can be found under the menu item called **LabCode
 
 <summary>Release notes</summary>
 
-v1.0.1 - Major change to `Crop_Stack_XYCT.ijm`
+## v1.0.2
 
-v1.0.0 - Initial version for release
+- CHange Montage Merge: LUT conversion now does not rely on other update sites.
+- Inclusion of OFP luts with `q_` prefix.
+- Fix for Change Montage Merge so that montage(s) stay open for inspection after the change.
+
+## v1.0.1
+
+- Major change to `Crop_Stack_XYCT.ijm`
+
+## v1.0.0
+
+- Initial version for release
 
 </details>

@@ -942,13 +942,14 @@ function autoChangeMontage(lutstring) {
 }
 
 function lutCheck() {
+	// quantixed update site installs a copy of CRL_OPF luts from NeuroCytoLUTs
 	check = true;
 	lutdir = getDirectory("luts");
-	path = lutdir + "CRL_OPF orange.lut";
+	path = lutdir + "q_OPF orange.lut";
 	if(!File.exists(path)) check = false;
-	path = lutdir + "CRL_OPF fresh.lut";
+	path = lutdir + "q_OPF fresh.lut";
 	if(!File.exists(path)) check = false;
-	path = lutdir + "CRL_OPF purple.lut";
+	path = lutdir + "q_OPF purple.lut";
 	if(!File.exists(path)) check = false;
 	return check;
 }
@@ -979,11 +980,11 @@ function makeLutArray(s) {
 		} else if (t == "W") {
 			lutarray[i] = "Grays";
 		} else if (t == "O") {
-			lutarray[i] = "CRL_OPF orange.lut";
+			lutarray[i] = "q_OPF orange.lut";
 		} else if (t == "F") {
-			lutarray[i] = "CRL_OPF fresh.lut";
+			lutarray[i] = "q_OPF fresh.lut";
 		} else if (t == "P") {
-			lutarray[i] = "CRL_OPF purple.lut";
+			lutarray[i] = "q_OPF purple.lut";
 		} else {
 			 exit ("Unknown LUT specification: " + t);
 		}
