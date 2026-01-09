@@ -8,7 +8,7 @@
  */
 
 macro "Auto Add ROI Zoom"	{
-	if (nImages == 0)	exit("No image open");
+	if (nImages == 0)	exit("No image(s) open");
 
 	imageID = getImageID();
 	title = getTitle();

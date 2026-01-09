@@ -25,3 +25,13 @@ This is the best way to install these macros and maintain the latest versions.
 If you want to install manually, add the contents of `macros` and `scripts` to the corresponding directories in your Fiji/ImageJ installation.
 
 After installation, all macros can be found under the menu item called **LabCode**.
+
+<details>
+
+<summary>Release notes</summary>
+
+v1.0.1 - Major change to `Crop_Stack_XYCT.ijm`
+
+v1.0.0 - Initial version for release
+
+</details>
