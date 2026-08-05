@@ -3,19 +3,25 @@
  * Apply all simulation modes on duplicate images
  * Collect in stack, create montage
  * 
- * 2020-07-20
- * @Author: Henrik Persson
+ * Based on original code by: Henrik Persson
  * Edits: quantixed 2022-03-26
+ * Updated: 2026-08-05
  * 
- * Future dev idea: use foreground colour that specifically contrasts with the image
- * Future dev idea: scale the image more intelligently
  */
 
+#@ String (visibility=MESSAGE, value="Color Blindness Simulation", required=false) msg1
+#@ Boolean (label="Label color blindness types?", value=true, persist=false) labeltypes
+#@ Float (label="Scale factor", value=0.25, min=0.01, max=1, stepsize=0.01) scalefactor
+#@ Boolean (label="Use current foreground color? (uncheck for magenta)", value=false, persist=false) forecol
+#@ Integer (label="Grout size (px)", value=6, persist=false) grout
+#@ Integer (label="Font size for labels, if used (pt)", value=16, persist=false) fontsize
+
+// check we have at least one image and that the top image is RGB
 if (nImages < 1) exit ("One image is required.");
+if(bitDepth() != 24) exit ("Image must be RGB.");
 
 //get original image name - we are working on the "top" image
 originalName = getTitle();
-if(bitDepth() != 24) exit ("Image must be RGB.");
 
 setBatchMode(true);
 
@@ -35,22 +41,18 @@ colorModes = newArray(
 //create new stack to store treated images
 newImage("Colorblindness simulation", "RGB black", getWidth(), getHeight(), colorModes.length);
 
-/*
- * loop over all colorModes
- * create duplicate image and apply colormode. 
- * Copy to stack and add label
- */
+// loop over all colorModes, create duplicate image and apply colormode, copy to stack and add label
 for(i=0; i<colorModes.length; i++){
 	selectWindow(originalName);
 	run("Duplicate...", " ");
-	rename(colorModes[i]);//duplicated image
+	rename(colorModes[i]); // duplicated image
 	run("Simulate Color Blindness", "mode=[" + colorModes[i] + "]");
 	run("Copy");
-	close();//the duplicated image
+	close(); // the duplicated image
 	selectWindow("Colorblindness simulation");
 	setSlice(i+1);
-	setMetadata("Label",colorModes[i]);//add label to current slice
-	run("Paste");//add duplicated, simulated image
+	setMetadata("Label",colorModes[i]); // add label to current slice
+	run("Paste"); // add duplicated, simulated image
 }
 
 run("Select None");
@@ -58,19 +60,36 @@ run("Select None");
 selectWindow(originalName);
 close();
 
-//Create a montage
+// create a montage
 selectWindow("Colorblindness simulation");
-setForegroundColor(255, 0, 255); // magenta is easier to see
-run("Make Montage...", "columns=3 rows=3 scale=0.25 border=5 font=18 label use");
+
+// what is the current foreground color
+fg = getValue("rgb.foreground");
+r = (fg>>16)&0xff;
+g = (fg>>8)&0xff;
+b = fg&0xff;
+
+if(forecol) {
+	setForegroundColor(r, g, b);
+} else {
+	setForegroundColor(255, 0, 255); // magenta
+}
+
+cmd = "columns=3 rows=3 scale=" + scalefactor + " border=" + grout + " font=" + fontsize;
+if(labeltypes) {
+	cmd = cmd + " label use";
+} else {
+	cmd = cmd + " use";
+}
+
+run("Make Montage...", cmd);
 if(lastIndexOf(originalName, ".") == -1) {
 	shortName = originalName;
-	extension = "";
 } else {
-	extension = substring(originalName, lastIndexOf(originalName, "."));
 	shortName = substring(originalName, 0, lastIndexOf(originalName, "."));
 }
-newName = shortName + "_cb" + extension;
+newName = shortName + "_cb";
 rename(newName);
-setForegroundColor(255, 255, 255); // back to white
+setForegroundColor(r, g, b); // back to original foreground color
 
 setBatchMode(false);
