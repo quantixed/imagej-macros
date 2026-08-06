@@ -9,12 +9,12 @@
  * 
  */
 
-#@ String (visibility=MESSAGE, value="Color Blindness Simulation", required=false) msg1
-#@ Boolean (label="Label color blindness types?", value=true, persist=false) labeltypes
-#@ Float (label="Scale factor", value=0.25, min=0.01, max=1, stepsize=0.01) scalefactor
-#@ Boolean (label="Use current foreground color? (uncheck for magenta)", value=false, persist=false) forecol
-#@ Integer (label="Grout size (px)", value=6, persist=false) grout
-#@ Integer (label="Font size for labels, if used (pt)", value=16, persist=false) fontsize
+#@ String (visibility=MESSAGE, value="Make montage of all Color Blindness simulations", required=false) msg1
+#@ Boolean (label="Label color blindness types?", value=true) labeltypes
+#@ Double (label="Scale factor", value=0.25, min=0.01, max=1, stepSize = 0.01, style="spinner") scalefactor
+#@ Boolean (label="Use current foreground color? (uncheck for magenta)", value=false) forecol
+#@ Integer (label="Grout size (px)", value=6) grout
+#@ Integer (label="Font size for labels, if used (pt)", value=16) fontsize
 
 // check we have at least one image and that the top image is RGB
 if (nImages < 1) exit ("One image is required.");
