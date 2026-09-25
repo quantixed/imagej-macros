@@ -19,11 +19,29 @@ macro "Make Montage" {
 	if (nImages > 0) exit ("Please close all open images");
 	filepath = File.openDialog("Select a File");
 	open(filepath);
-  dir1 = getDirectory("image");
+	dir1 = getDirectory("image");
 	// determine what we are dealing width
 	getDimensions(ww, hh, cc, ss, ff);
 	win = getTitle();
 	okVar = checkImageForMontage(win);
+	// if we have a movie or a stack, save slice names as a string array for later use
+	if (ss > 1 || ff > 1) {
+		if (ss > 1) {
+			sliceMax = ss;
+		} else if (ff > 1) {
+			sliceMax = ff;
+		}
+		sliceNames = newArray(sliceMax);
+		for (i = 0; i < sliceMax; i++) {
+			if (ss > 1) {
+				setSlice(i + 1);
+			} else if (ff > 1) {
+				setFrame(i + 1);
+			}
+			sliceNames[i] = getMetadata("Label");
+		}
+	}
+
 	if (okVar == true) {
 		montageMaker(dir1);
 	} else if (okVar == false) {
@@ -35,7 +53,7 @@ macro "Make Montage" {
 		qCheckForTempFiles(dir);
 		// split out stack into separate files in temporary directory
 		qSaveImageSequence(dir);
-		montageMakerMulti(dir, dir1, false, win);
+		montageMakerMulti(dir, dir1, false, win, sliceNames);
 	}
 }
 

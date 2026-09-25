@@ -22,5 +22,5 @@ macro "Make Montages Directory" {
 	dir1 = getDirectory("Source Directory ");
 	dir2 = getDirectory("Destination Directory ");
 
-	montageMakerMulti(dir1, dir2, true, "none");
+	montageMakerMulti(dir1, dir2, true, "none", "none");
 }
