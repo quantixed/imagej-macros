@@ -117,4 +117,6 @@ function autoInvertMontage() {
 		path = path + ".tif";
 	}
 	saveAs("TIFF", path);
+	// close so the do-while loop in the macro moves on to the next open image
+	close();
 }
